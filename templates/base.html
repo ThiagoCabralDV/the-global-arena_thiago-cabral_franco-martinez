@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ARENAFGC</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+    
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'torneos/css/base.css' %}">
+</head>
+<body>
+
+    <nav class="navbar navbar-expand-lg navbar-custom sticky-top">
+        <div class="container">
+            <a class="navbar-brand text-white fw-bold d-flex align-items-center gap-2" href="#">
+                <i class="fa-solid fa-gamepad brand-icon"></i> ARENA<span class="brand-accent">FGC</span>
+            </a>
+            
+            <button class="navbar-toggler navbar-dark border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav mx-auto gap-1 my-2 my-lg-0">
+                    <li class="nav-item">
+                        <a class="nav-link nav-link-custom active" href="#">
+                            <i class="fa-solid fa-house icon-spacing"></i> Inicio
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link nav-link-custom" href="#">
+                            <i class="fa-solid fa-trophy icon-spacing"></i> Torneos
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link nav-link-custom" href="#">
+                            <i class="fa-solid fa-user-group icon-spacing"></i> Jugadores
+                        </a>
+                    </li>
+                </ul>
+                
+                <div class="d-flex align-items-center gap-3">
+                    <button class="btn btn-purple-custom">
+                        <i class="fa-solid fa-plus icon-spacing"></i> Crear Torneo
+                    </button>
+                    <a href="#" class="logout-link">
+                        <i class="fa-solid fa-right-from-bracket me-1"></i> Salir
+                    </a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <main>
+        {% block content %}
+        {% endblock %}
+    </main>
+
+    <footer class="footer-custom py-5 mt-5">
+        <div class="container">
+            <div class="row gy-4">
+                <div class="col-md-6">
+                    <div class="text-white fw-bold d-flex align-items-center gap-2 mb-3 standard-heading">
+                        <i class="fa-solid fa-gamepad brand-icon"></i> ARENA<span class="brand-accent">FGC</span>
+                    </div>
+                    <p class="small mb-0 footer-description">
+                        La plataforma definitiva para torneos de juegos de pelea. Compite, mejora y sé parte de la comunidad FGC.
+                    </p>
+                </div>
+                
+                <div class="col-md-3">
+                    <div class="text-white fw-bold small mb-3 section-tracking">NAVEGACIÓN</div>
+                    <ul class="list-unstyled d-flex flex-column gap-2 small">
+                        <li><a href="#" class="footer-link"><i class="fa-solid fa-trophy me-1 sub-icon"></i> Torneos</a></li>
+                        <li><a href="#" class="footer-link"><i class="fa-solid fa-user-group me-1 sub-icon"></i> Jugadores</a></li>
+                    </ul>
+                </div>
+                
+                <div class="col-md-3">
+                    <div class="text-white fw-bold small mb-3 section-tracking">COMUNIDAD</div>
+                    <div class="d-flex gap-2">
+                        <a href="#" class="social-btn"><i class="fa-brands fa-twitter"></i></a>
+                        <a href="#" class="social-btn"><i class="fa-brands fa-github"></i></a>
+                    </div>
+                </div>
+            </div>
+            
+            <hr class="footer-divider my-4">
+            
+            <div class="text-center footer-copy">
+                © 2026 ArenaFGC. Todos los derechos reservados.
+            </div>
+        </div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

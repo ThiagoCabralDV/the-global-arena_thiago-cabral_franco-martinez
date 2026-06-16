@@ -25,12 +25,12 @@
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav mx-auto gap-1 my-2 my-lg-0">
                     <li class="nav-item">
-                        <a class="nav-link nav-link-custom active" href="{% url 'index' %}">
+                        <a class="nav-link nav-link-custom {% if request.resolver_match.url_name == 'index' %}active{% endif %}" href="{% url 'index' %}">
                             <i class="fa-solid fa-house icon-spacing"></i> Inicio
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link nav-link-custom" href="{% url 'lista_torneos' %}">
+                        <a class="nav-link nav-link-custom {% if request.resolver_match.url_name == 'lista_torneos' %}active{% endif %}" href="{% url 'lista_torneos' %}">
                             <i class="fa-solid fa-trophy icon-spacing"></i> Torneos
                         </a>
                     </li>

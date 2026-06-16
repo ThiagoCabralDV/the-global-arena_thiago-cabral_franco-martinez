@@ -1,0 +1,26 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<style>
+    .card { background: #1e1e1e; border: 1px solid #333; padding: 15px; margin-bottom: 15px; border-radius: 8px; color: white; }
+    .badge { background: #ff4655; padding: 5px 10px; border-radius: 4px; font-size: 12px; color: white; }
+    h1 { color: white; }
+</style>
+
+<div class="container mt-4">
+    <h1>🏆 Torneos Disponibles</h1>
+    <hr style="border-color: #333;">
+
+    {% for torneo in torneos %}
+        <div class="card">
+            <h2>{{ torneo.nombre }}</h2>
+            <p><strong>Videojuego:</strong> {{ torneo.videojuego.nombre }}</p>
+            <p><strong>Organizador:</strong> {{ torneo.organizador }}</p>
+            <p><strong>Cupos:</strong> {{ torneo.cupo_maximo }} jugadores</p>
+            <span class="badge">{{ torneo.estado }}</span>
+        </div>
+    {% empty %}
+        <p class="text-muted">No hay torneos activos en este momento.</p>
+    {% endfor %}
+</div>
+{% endblock %}

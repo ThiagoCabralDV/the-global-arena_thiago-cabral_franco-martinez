@@ -36,3 +36,13 @@ def inscribir_a_torneo(request, torneo_id):
         
     # 5. Redireccionamos al usuario de vuelta al inicio
     return redirect('index')
+
+def lista_torneos(request):
+    """
+    Vista que trae todos los torneos de la base de datos para listarlos en el frontend.
+    """
+    # Traemos todos los torneos de la base de datos
+    torneos = Torneo.objects.all()
+    
+    # Enviamos los torneos al archivo HTML dentro de un "contexto"
+    return render(request, 'torneos/lista_torneos.html', {'torneos': torneos})

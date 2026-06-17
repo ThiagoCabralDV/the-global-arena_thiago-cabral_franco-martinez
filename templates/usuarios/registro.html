@@ -1,0 +1,24 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-5">
+            <div class="card p-4" style="background: #1e1e1e; border: 1px solid #333; color: white; border-radius: 8px;">
+                <h2 class="text-center mb-4">🎮 Crear Cuenta</h2>
+                <hr style="border-color: #333;">
+                <form method="POST">
+                    {% csrf_token %}
+                    <div class="mb-3 custom-form-inputs">
+                        {{ form.as_p }}
+                    </div>
+                    <button type="submit" class="btn btn-purple-custom w-100 mt-2">Registrarse</button>
+                </form>
+                <p class="mt-3 text-center small text-muted">
+                    ¿Ya tenés cuenta? <a href="{% url 'login' %}" class="brand-accent text-decoration-none">Iniciá sesión</a>
+                </p>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

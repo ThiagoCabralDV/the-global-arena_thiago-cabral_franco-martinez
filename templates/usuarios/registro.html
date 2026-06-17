@@ -19,14 +19,22 @@
 
                 <form method="POST">
                     {% csrf_token %}
+                    
                     <div class="mb-3">
                         <label class="text-white small mb-1"><i class="fa-solid fa-user me-1"></i> Usuario</label>
                         <input type="text" name="username" class="form-control form-control-dark" placeholder="Tu nombre de usuario" value="{{ form.username.value|default:'' }}" required>
                     </div>
+
+                    <div class="mb-3">
+                        <label class="text-white small mb-1"><i class="fa-solid fa-envelope me-1"></i> Correo Electrónico</label>
+                        <input type="email" name="email" class="form-control form-control-dark" placeholder="tu@email.com" value="{{ form.email.value|default:'' }}" required>
+                    </div>
+
                     <div class="mb-3">
                         <label class="text-white small mb-1"><i class="fa-solid fa-lock me-1"></i> Contraseña</label>
                         <input type="password" name="password1" class="form-control form-control-dark" placeholder="Elegí una contraseña" required>
                     </div>
+
                     <div class="mb-4">
                         <label class="text-white small mb-1"><i class="fa-solid fa-lock me-1"></i> Confirmá tu contraseña</label>
                         <input type="password" name="password2" class="form-control form-control-dark" placeholder="Repetí la contraseña" required>

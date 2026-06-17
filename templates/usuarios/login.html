@@ -1,24 +1,61 @@
 {% extends 'base.html' %}
 
 {% block content %}
-<div class="container mt-5">
+<div class="container mt-5 mb-5">
     <div class="row justify-content-center">
         <div class="col-md-5">
-            <div class="card p-4" style="background: #1e1e1e; border: 1px solid #333; color: white; border-radius: 8px;">
-                <h2 class="text-center mb-4">🏆 Iniciar Sesión</h2>
-                <hr style="border-color: #333;">
+            <div class="text-center mb-4">
+                <i class="fa-solid fa-gamepad brand-icon" style="font-size: 2.5rem;"></i>
+                <h2 class="text-white fw-bold mt-2">ARENA<span class="brand-accent">FGC</span></h2>
+                <p class="text-muted small">Iniciá sesión para competir</p>
+            </div>
+
+            <div class="p-4 rounded-3" style="background: #1a1a2e; border: 1px solid #2d2d4e;">
+                {% if messages %}
+                    {% for message in messages %}
+                        <div class="alert alert-danger py-2 small">{{ message }}</div>
+                    {% endfor %}
+                {% endif %}
+
                 <form method="POST">
                     {% csrf_token %}
-                    <div class="mb-3 custom-form-inputs">
-                        {{ form.as_p }}
+                    <div class="mb-3">
+                        <label class="text-white small mb-1"><i class="fa-solid fa-user me-1"></i> Usuario</label>
+                        <input type="text" name="username" class="form-control form-control-dark" placeholder="Tu nombre de usuario" value="{{ form.username.value|default:'' }}" required>
                     </div>
-                    <button type="submit" class="btn btn-purple-custom w-100 mt-2">Entrar</button>
+                    <div class="mb-4">
+                        <label class="text-white small mb-1"><i class="fa-solid fa-lock me-1"></i> Contraseña</label>
+                        <input type="password" name="password" class="form-control form-control-dark" placeholder="Tu contraseña" required>
+                    </div>
+                    <button type="submit" class="btn btn-purple-custom w-100 fw-bold">
+                        <i class="fa-solid fa-right-to-bracket me-2"></i> Entrar
+                    </button>
                 </form>
-                <p class="mt-3 text-center small text-muted">
-                    ¿No tenés cuenta? <a href="{% url 'registro' %}" class="brand-accent text-decoration-none">Registrate acá</a>
+
+                <hr style="border-color: #2d2d4e;" class="my-4">
+
+                <p class="text-center text-muted small mb-0">
+                    ¿No tenés cuenta? <a href="{% url 'registro' %}" class="brand-accent text-decoration-none fw-bold">Registrate acá</a>
                 </p>
             </div>
         </div>
     </div>
 </div>
+
+<style>
+.form-control-dark {
+    background: #0f0f1a;
+    border: 1px solid #2d2d4e;
+    color: white;
+}
+.form-control-dark:focus {
+    background: #0f0f1a;
+    border-color: #7c3aed;
+    color: white;
+    box-shadow: 0 0 0 0.2rem rgba(124, 58, 237, 0.25);
+}
+.form-control-dark::placeholder {
+    color: #555;
+}
+</style>
 {% endblock %}

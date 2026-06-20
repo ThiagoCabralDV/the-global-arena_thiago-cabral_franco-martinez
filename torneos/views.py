@@ -1,48 +1,45 @@
-# torneos/views.py
-from django.shortcuts import render, get_object_or_404, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from .models import Torneo
-
-# Importamos el controlador Singleton personalizado desde la estructura de carpetas de la cátedra
-from torneos.singleton.tournament_manager import TournamentManager
+from .forms import TorneoForm
+from .singleton.tournament_manager import TournamentManager
 
 def index(request):
-    """
-    Vista que renderiza la página de inicio (Home) de The Global Arena.
-    """
-    return render(request, 'index.html')
+    torneos_recientes = Torneo.objects.all().order_by('-fecha_inicio')[:3]
+    return render(request, 'index.html', {'torneos_recientes': torneos_recientes})
+
+def lista_torneos(request):
+    torneos = Torneo.objects.all().order_by('-fecha_inicio')
+    return render(request, 'torneos/lista_torneos.html', {'torneos': torneos})
+
+def detalle_torneo(request, torneo_id):
+    torneo = get_object_or_404(Torneo, pk=torneo_id)
+    return render(request, 'torneos/detalle_torneo.html', {'torneo': torneo})
 
 @login_required
-def inscribir_a_torneo(request, torneo_id):
-    """
-    Vista (MVC) que actúa como interfaz entre el cliente (template) 
-    y el controlador de negocio único (Singleton).
-    """
-    # 1. Buscamos el torneo en la Base de Datos o tiramos un error 404 si no existe
+def crear_torneo(request):
+    if request.method == 'POST':
+        form = TorneoForm(request.POST)
+        if form.is_valid():
+            torneo = form.save(commit=False)
+            torneo.organizador = request.user
+            torneo.save()
+            messages.success(request, '¡Torneo creado exitosamente!')
+            return redirect('lista_torneos')
+        else:
+            messages.error(request, 'Corregí los errores del formulario.')
+    else:
+        form = TorneoForm()
+    return render(request, 'torneos/crear_torneo.html', {'form': form})
+
+@login_required
+def inscribir_torneo(request, torneo_id):
     torneo = get_object_or_404(Torneo, pk=torneo_id)
-    
-    # 2. Recuperamos la INSTANCIA ÚNICA del manager (Singleton)
     manager = TournamentManager()
-    
-    # 3. Delegamos las reglas de negocio al mánager único
     exito, mensaje = manager.validar_y_registrar_jugador(torneo, request.user)
-    
-    # 4. Enviamos alertas visuales a la UI básica usando el framework de mensajes de Django
     if exito:
         messages.success(request, mensaje)
     else:
         messages.error(request, mensaje)
-        
-    # 5. Redireccionamos al usuario de vuelta al inicio
-    return redirect('index')
-
-def lista_torneos(request):
-    """
-    Vista que trae todos los torneos de la base de datos para listarlos en el frontend.
-    """
-    # Traemos todos los torneos de la base de datos
-    torneos = Torneo.objects.all()
-    
-    # Enviamos los torneos al archivo HTML dentro de un "contexto"
-    return render(request, 'torneos/lista_torneos.html', {'torneos': torneos})
+    return redirect('detalle_torneo', torneo_id=torneo_id)

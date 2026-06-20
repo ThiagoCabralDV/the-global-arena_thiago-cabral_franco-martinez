@@ -48,9 +48,9 @@
                              Hola, <strong class="text-white">{{ user.username }}</strong>
                         </span>
                         
-                        <button class="btn btn-purple-custom">
+                        <a href="{% url 'crear_torneo' %}" class="btn btn-purple-custom">
                             <i class="fa-solid fa-plus icon-spacing"></i> Crear Torneo
-                        </button>
+                        </a>
                         
                         <a href="{% url 'logout' %}" class="logout-link">
                             <i class="fa-solid fa-right-from-bracket me-1"></i> Salir

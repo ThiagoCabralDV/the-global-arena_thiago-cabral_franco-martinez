@@ -1,0 +1,77 @@
+{% extends 'base.html' %}
+
+{% block title %}Crear Torneo - ArenaFGC{% endblock %}
+
+{% block content %}
+<div class="container mt-5 mb-5">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="text-center mb-4">
+                <h2 class="text-white fw-bold">
+                    <i class="fa-solid fa-plus brand-accent me-2"></i> Crear Torneo
+                </h2>
+                <p class="text-muted small">Completá los datos para publicar tu torneo</p>
+            </div>
+
+            <div class="p-4 rounded-3" style="background: #1a1a2e; border: 1px solid #2d2d4e;">
+                {% if messages %}
+                    {% for message in messages %}
+                        <div class="alert alert-danger py-2 small">{{ message }}</div>
+                    {% endfor %}
+                {% endif %}
+
+                <form method="POST">
+                    {% csrf_token %}
+                    <div class="mb-3">
+                        <label class="text-white small mb-1">
+                            <i class="fa-solid fa-pen me-1"></i> Nombre del torneo
+                        </label>
+                        {{ form.nombre }}
+                    </div>
+                    <div class="mb-3">
+                        <label class="text-white small mb-1">
+                            <i class="fa-solid fa-gamepad me-1"></i> Videojuego
+                        </label>
+                        {{ form.videojuego }}
+                    </div>
+                    <div class="mb-3">
+                        <label class="text-white small mb-1">
+                            <i class="fa-solid fa-align-left me-1"></i> Descripción
+                        </label>
+                        {{ form.descripcion }}
+                    </div>
+                    <div class="mb-3">
+                        <label class="text-white small mb-1">
+                            <i class="fa-solid fa-calendar me-1"></i> Fecha de inicio
+                        </label>
+                        {{ form.fecha_inicio }}
+                    </div>
+                    <div class="mb-4">
+                        <label class="text-white small mb-1">
+                            <i class="fa-solid fa-users me-1"></i> Cupo máximo
+                        </label>
+                        {{ form.cupo_maximo }}
+                    </div>
+                    <button type="submit" class="btn btn-purple-custom w-100 fw-bold">
+                        <i class="fa-solid fa-trophy me-2"></i> Publicar Torneo
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+.form-control-dark, .form-select-dark {
+    background: #0f0f1a;
+    border: 1px solid #2d2d4e;
+    color: white;
+}
+.form-control-dark:focus {
+    background: #0f0f1a;
+    border-color: #7c3aed;
+    color: white;
+    box-shadow: 0 0 0 0.2rem rgba(124, 58, 237, 0.25);
+}
+</style>
+{% endblock %}

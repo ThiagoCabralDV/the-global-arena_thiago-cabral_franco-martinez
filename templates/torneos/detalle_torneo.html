@@ -1,0 +1,77 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ torneo.nombre }} - ArenaFGC{% endblock %}
+
+{% block content %}
+<div class="container mt-5 mb-5">
+    <div class="p-4 rounded-3" style="background: #1a1a2e; border: 1px solid #2d2d4e;">
+
+        <div class="mb-3">
+            <span class="badge mb-2
+                {% if torneo.estado == 'LIV' %}bg-success
+                {% elif torneo.estado == 'PRX' %}bg-warning text-dark
+                {% else %}bg-secondary{% endif %}">
+                {{ torneo.get_estado_display }}
+            </span>
+            <h2 class="text-white fw-bold">{{ torneo.nombre }}</h2>
+        </div>
+
+        <div class="row mb-4">
+            <div class="col-md-4">
+                <p class="text-muted small mb-1"><i class="fa-solid fa-gamepad me-1"></i> Videojuego</p>
+                <p class="text-white">{{ torneo.videojuego.nombre }}</p>
+            </div>
+            <div class="col-md-4">
+                <p class="text-muted small mb-1"><i class="fa-solid fa-calendar me-1"></i> Fecha de inicio</p>
+                <p class="text-white">{{ torneo.fecha_inicio|date:"d/m/Y H:i" }}</p>
+            </div>
+            <div class="col-md-4">
+                <p class="text-muted small mb-1"><i class="fa-solid fa-users me-1"></i> Cupo máximo</p>
+                <p class="text-white">{{ torneo.cupo_maximo }} jugadores</p>
+            </div>
+        </div>
+
+        {% if torneo.descripcion %}
+        <div class="mb-4">
+            <p class="text-muted small mb-1"><i class="fa-solid fa-align-left me-1"></i> Descripción</p>
+            <p class="text-white">{{ torneo.descripcion }}</p>
+        </div>
+        {% endif %}
+
+        <p class="text-muted small mb-4">
+            <i class="fa-solid fa-user me-1"></i> Organizador:
+            <span class="text-white">{{ torneo.organizador.username }}</span>
+        </p>
+
+        {% if messages %}
+            {% for message in messages %}
+                <div class="alert py-2 small
+                    {% if message.tags == 'success' %}alert-success{% else %}alert-danger{% endif %}">
+                    {{ message }}
+                </div>
+            {% endfor %}
+        {% endif %}
+
+        {% if user.is_authenticated %}
+            {% if user != torneo.organizador %}
+                <form method="POST" action="{% url 'inscribir_torneo' torneo.id %}">
+                    {% csrf_token %}
+                    <button type="submit" class="btn btn-purple-custom fw-bold">
+                        <i class="fa-solid fa-user-plus me-2"></i> Inscribirme
+                    </button>
+                </form>
+            {% else %}
+                <span class="text-muted small">Sos el organizador de este torneo.</span>
+            {% endif %}
+        {% else %}
+            <a href="{% url 'login' %}" class="btn btn-outline-light">
+                Iniciá sesión para inscribirte
+            </a>
+        {% endif %}
+    </div>
+
+    <a href="{% url 'lista_torneos' %}" class="btn btn-outline-light mt-3">
+        <i class="fa-solid fa-arrow-left me-1"></i> Volver a torneos
+    </a>
+</div>
+{% endblock %}

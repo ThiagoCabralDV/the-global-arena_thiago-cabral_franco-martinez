@@ -25,12 +25,12 @@
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav mx-auto gap-1 my-2 my-lg-0">
                     <li class="nav-item">
-                        <a class="nav-link nav-link-custom active" href="#">
+                        <a class="nav-link nav-link-custom {% if request.resolver_match.url_name == 'index' %}active{% endif %}" href="{% url 'index' %}">
                             <i class="fa-solid fa-house icon-spacing"></i> Inicio
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link nav-link-custom" href="#">
+                        <a class="nav-link nav-link-custom {% if request.resolver_match.url_name == 'lista_torneos' %}active{% endif %}" href="{% url 'lista_torneos' %}">
                             <i class="fa-solid fa-trophy icon-spacing"></i> Torneos
                         </a>
                     </li>
@@ -42,12 +42,29 @@
                 </ul>
                 
                 <div class="d-flex align-items-center gap-3">
-                    <button class="btn btn-purple-custom">
-                        <i class="fa-solid fa-plus icon-spacing"></i> Crear Torneo
-                    </button>
-                    <a href="#" class="logout-link">
-                        <i class="fa-solid fa-right-from-bracket me-1"></i> Salir
-                    </a>
+                    {% if user.is_authenticated %}
+                        <!-- Lo que ve el usuario cuando SÍ inició sesión -->
+                        <span class="text-white-50 small me-1">
+                             Hola, <strong class="text-white">{{ user.username }}</strong>
+                        </span>
+                        
+                        <a href="{% url 'crear_torneo' %}" class="btn btn-purple-custom">
+                            <i class="fa-solid fa-plus icon-spacing"></i> Crear Torneo
+                        </a>
+                        
+                        <a href="{% url 'logout' %}" class="logout-link">
+                            <i class="fa-solid fa-right-from-bracket me-1"></i> Salir
+                        </a>
+                    {% else %}
+                        <!-- Lo que ve un visitante anónimo -->
+                        <a href="{% url 'login' %}" class="logout-link text-decoration-none me-2">
+                            <i class="fa-solid fa-right-to-bracket me-1"></i> Iniciar Sesión
+                        </a>
+                        
+                        <a href="{% url 'registro' %}" class="btn btn-purple-custom">
+                            <i class="fa-solid fa-user-plus me-1"></i> Registrarse
+                        </a>
+                    {% endif %}
                 </div>
             </div>
         </div>

@@ -1,0 +1,84 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container mt-5 mb-5">
+    <div class="row justify-content-center">
+        <div class="col-md-5">
+            <div class="text-center mb-4">
+                <i class="fa-solid fa-gamepad brand-icon" style="font-size: 2.5rem;"></i>
+                <h2 class="text-white fw-bold mt-2">ARENA<span class="brand-accent">FGC</span></h2>
+                <p class="text-muted small">Creá tu cuenta y empezá a competir</p>
+            </div>
+
+            <div class="p-4 rounded-3" style="background: #1a1a2e; border: 1px solid #2d2d4e;">
+                {% if messages %}
+                    {% for message in messages %}
+                        <div class="alert alert-success py-2 small">{{ message }}</div>
+                    {% endfor %}
+                {% endif %}
+
+                <form method="POST">
+                    {% csrf_token %}
+                    
+                    <div class="mb-3">
+                        <label class="text-white small mb-1"><i class="fa-solid fa-user me-1"></i> Usuario</label>
+                        <input type="text" name="username" class="form-control form-control-dark" placeholder="Tu nombre de usuario" value="{{ form.username.value|default:'' }}" required>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="text-white small mb-1"><i class="fa-solid fa-envelope me-1"></i> Correo Electrónico</label>
+                        <input type="email" name="email" class="form-control form-control-dark" placeholder="tu@email.com" value="{{ form.email.value|default:'' }}" required>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="text-white small mb-1"><i class="fa-solid fa-lock me-1"></i> Contraseña</label>
+                        <input type="password" name="password1" class="form-control form-control-dark" placeholder="Elegí una contraseña" required>
+                    </div>
+
+                    <div class="mb-4">
+                        <label class="text-white small mb-1"><i class="fa-solid fa-lock me-1"></i> Confirmá tu contraseña</label>
+                        <input type="password" name="password2" class="form-control form-control-dark" placeholder="Repetí la contraseña" required>
+                    </div>
+
+                    {% if form.errors %}
+                        <div class="alert alert-danger py-2 small">
+                            {% for field in form %}
+                                {% for error in field.errors %}
+                                    <div>{{ error }}</div>
+                                {% endfor %}
+                            {% endfor %}
+                        </div>
+                    {% endif %}
+
+                    <button type="submit" class="btn btn-purple-custom w-100 fw-bold">
+                        <i class="fa-solid fa-user-plus me-2"></i> Crear cuenta
+                    </button>
+                </form>
+
+                <hr style="border-color: #2d2d4e;" class="my-4">
+
+                <p class="text-center text-muted small mb-0">
+                    ¿Ya tenés cuenta? <a href="{% url 'login' %}" class="brand-accent text-decoration-none fw-bold">Iniciá sesión</a>
+                </p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+.form-control-dark {
+    background: #0f0f1a;
+    border: 1px solid #2d2d4e;
+    color: white;
+}
+.form-control-dark:focus {
+    background: #0f0f1a;
+    border-color: #7c3aed;
+    color: white;
+    box-shadow: 0 0 0 0.2rem rgba(124, 58, 237, 0.25);
+}
+.form-control-dark::placeholder {
+    color: #555;
+}
+</style>
+{% endblock %}

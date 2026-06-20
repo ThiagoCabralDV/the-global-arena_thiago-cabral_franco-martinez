@@ -14,8 +14,18 @@ def lista_torneos(request):
     return render(request, 'torneos/lista_torneos.html', {'torneos': torneos})
 
 def detalle_torneo(request, torneo_id):
+    from inscripciones.models import Inscripcion
     torneo = get_object_or_404(Torneo, pk=torneo_id)
-    return render(request, 'torneos/detalle_torneo.html', {'torneo': torneo})
+    inscripciones = Inscripcion.objects.filter(torneo=torneo).exclude(estado='CAN').select_related('usuario')
+    ya_inscrito = False
+    if request.user.is_authenticated:
+        ya_inscrito = inscripciones.filter(usuario=request.user).exists()
+    return render(request, 'torneos/detalle_torneo.html', {
+        'torneo': torneo,
+        'inscripciones': inscripciones,
+        'ya_inscrito': ya_inscrito,
+        'cupos_disponibles': torneo.cupo_maximo - inscripciones.count(),
+    })
 
 @login_required
 def crear_torneo(request):

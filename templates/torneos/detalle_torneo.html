@@ -43,6 +43,11 @@
             <span class="text-white">{{ torneo.organizador.username }}</span>
         </p>
 
+        <p class="text-muted small mb-3">
+            <i class="fa-solid fa-users me-1"></i> Cupos disponibles: 
+            <span class="text-white fw-bold">{{ cupos_disponibles }}</span> / {{ torneo.cupo_maximo }}
+        </p>
+
         {% if messages %}
             {% for message in messages %}
                 <div class="alert py-2 small
@@ -53,20 +58,43 @@
         {% endif %}
 
         {% if user.is_authenticated %}
-            {% if user != torneo.organizador %}
+            {% if user == torneo.organizador %}
+                <span class="text-muted small">Sos el organizador de este torneo.</span>
+            {% elif ya_inscrito %}
+                <span class="badge bg-success py-2 px-3">
+                    <i class="fa-solid fa-check me-1"></i> Ya estás inscrito
+                </span>
+            {% elif cupos_disponibles <= 0 %}
+                <span class="badge bg-secondary py-2 px-3">Cupo lleno</span>
+            {% else %}
                 <form method="POST" action="{% url 'inscribir_torneo' torneo.id %}">
                     {% csrf_token %}
                     <button type="submit" class="btn btn-purple-custom fw-bold">
                         <i class="fa-solid fa-user-plus me-2"></i> Inscribirme
                     </button>
                 </form>
-            {% else %}
-                <span class="text-muted small">Sos el organizador de este torneo.</span>
             {% endif %}
         {% else %}
             <a href="{% url 'login' %}" class="btn btn-outline-light">
                 Iniciá sesión para inscribirte
             </a>
+        {% endif %}
+    </div>
+
+    <div class="p-4 rounded-3 mt-4" style="background: #1a1a2e; border: 1px solid #2d2d4e;">
+        <h5 class="text-white fw-bold mb-3">
+            <i class="fa-solid fa-users me-2"></i> Jugadores inscritos ({{ inscripciones.count }})
+        </h5>
+        {% if inscripciones %}
+            <ul class="list-unstyled">
+                {% for inscripcion in inscripciones %}
+                <li class="text-white-50 py-1 border-bottom" style="border-color: #2d2d4e !important;">
+                    <i class="fa-solid fa-user-ninja me-2 brand-accent"></i> {{ inscripcion.usuario.username }}
+                </li>
+                {% endfor %}
+            </ul>
+        {% else %}
+            <p class="text-muted small mb-0">Todavía no hay jugadores inscritos.</p>
         {% endif %}
     </div>
 

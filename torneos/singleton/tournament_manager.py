@@ -29,3 +29,14 @@ class TournamentManager(metaclass=TournamentInstance):
         # 3. Si nunca se había anotado, creamos el registro limpio
         Inscripcion.objects.create(torneo=torneo, usuario=usuario, estado='CON')
         return True, f"Inscripción exitosa al torneo {torneo.nombre}."
+
+    def desinscribir_jugador(self, torneo, usuario):
+        from inscripciones.models import Inscripcion
+
+        inscripcion = Inscripcion.objects.filter(torneo=torneo, usuario=usuario).exclude(estado='CAN').first()
+        if not inscripcion:
+            return False, "No estás inscrito en este torneo."
+
+        inscripcion.estado = 'CAN'
+        inscripcion.save()
+        return True, f"Te desinscribiste del torneo {torneo.nombre}."

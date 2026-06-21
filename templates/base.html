@@ -39,14 +39,24 @@
                             <i class="fa-solid fa-user-group icon-spacing"></i> Jugadores
                         </a>
                     </li>
+                    <li class="nav-item">
+                        <a class="nav-link nav-link-custom {% if request.resolver_match.url_name == 'resultados_torneos' %}active{% endif %}" href="{% url 'resultados_torneos' %}">
+                            <i class="fa-solid fa-chart-simple icon-spacing"></i> Resultados
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link nav-link-custom {% if request.resolver_match.url_name == 'rendimiento_jugadores' %}active{% endif %}" href="{% url 'rendimiento_jugadores' %}">
+                            <i class="fa-solid fa-ranking-star icon-spacing"></i> Ranking
+                        </a>
+                    </li>
                 </ul>
                 
                 <div class="d-flex align-items-center gap-3">
                     {% if user.is_authenticated %}
-                        <!-- Lo que ve el usuario cuando SÍ inició sesión -->
-                        <span class="text-white-50 small me-1">
-                             Hola, <strong class="text-white">{{ user.username }}</strong>
-                        </span>
+                        <a href="{% url 'ver_perfil' %}" class="text-decoration-none me-2" style="color: #8a8d98;">
+                            <i class="fa-solid fa-circle-user me-1"></i>
+                            <strong class="text-white">{{ user.username }}</strong>
+                        </a>
                         
                         <a href="{% url 'crear_torneo' %}" class="btn btn-purple-custom">
                             <i class="fa-solid fa-plus icon-spacing"></i> Crear Torneo

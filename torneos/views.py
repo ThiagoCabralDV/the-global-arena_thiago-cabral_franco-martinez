@@ -31,6 +31,7 @@ def detalle_torneo(request, torneo_id):
         'torneo': torneo,
         'inscripciones': inscripciones,
         'ya_inscrito': ya_inscrito,
+        'inscripto': ya_inscrito,  # Clonamos la variable como salvavidas por si Franco la usa así en otra vista
         'cupos_disponibles': torneo.cupo_maximo - inscripciones.count(),
     })
 
@@ -59,6 +60,17 @@ def inscribir_torneo(request, torneo_id):
     torneo = get_object_or_404(Torneo, pk=torneo_id)
     manager = TournamentManager()  # Uso de tu patrón Singleton
     exito, mensaje = manager.validar_y_registrar_jugador(torneo, request.user)
+    if exito:
+        messages.success(request, mensaje)
+    else:
+        messages.error(request, mensaje)
+    return redirect('detalle_torneo', torneo_id=torneo_id)
+
+@login_required
+def desinscribir_torneo(request, torneo_id):
+    torneo = get_object_or_404(Torneo, pk=torneo_id)
+    manager = TournamentManager()  # Acoplado al Singleton correctamente
+    exito, mensaje = manager.desinscribir_jugador(torneo, request.user)
     if exito:
         messages.success(request, mensaje)
     else:

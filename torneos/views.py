@@ -4,6 +4,7 @@ from django.contrib import messages
 from .models import Torneo
 from .forms import TorneoForm
 from .singleton.tournament_manager import TournamentManager
+from inscripciones.models import Inscripcion
 
 def index(request):
     torneos_recientes = Torneo.objects.all().order_by('-fecha_inicio')[:3]
@@ -15,7 +16,12 @@ def lista_torneos(request):
 
 def detalle_torneo(request, torneo_id):
     torneo = get_object_or_404(Torneo, pk=torneo_id)
-    return render(request, 'torneos/detalle_torneo.html', {'torneo': torneo})
+    inscripto = False
+    if request.user.is_authenticated:
+        inscripto = Inscripcion.objects.filter(
+            torneo=torneo, usuario=request.user
+        ).exclude(estado='CAN').exists()
+    return render(request, 'torneos/detalle_torneo.html', {'torneo': torneo, 'inscripto': inscripto})
 
 @login_required
 def crear_torneo(request):
@@ -38,6 +44,17 @@ def inscribir_torneo(request, torneo_id):
     torneo = get_object_or_404(Torneo, pk=torneo_id)
     manager = TournamentManager()
     exito, mensaje = manager.validar_y_registrar_jugador(torneo, request.user)
+    if exito:
+        messages.success(request, mensaje)
+    else:
+        messages.error(request, mensaje)
+    return redirect('detalle_torneo', torneo_id=torneo_id)
+
+@login_required
+def desinscribir_torneo(request, torneo_id):
+    torneo = get_object_or_404(Torneo, pk=torneo_id)
+    manager = TournamentManager()
+    exito, mensaje = manager.desinscribir_jugador(torneo, request.user)
     if exito:
         messages.success(request, mensaje)
     else:

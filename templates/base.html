@@ -53,10 +53,10 @@
                 
                 <div class="d-flex align-items-center gap-3">
                     {% if user.is_authenticated %}
-                        <!-- Lo que ve el usuario cuando SÍ inició sesión -->
-                        <span class="text-white-50 small me-1">
-                             Hola, <strong class="text-white">{{ user.username }}</strong>
-                        </span>
+                        <a href="{% url 'ver_perfil' %}" class="text-decoration-none me-2" style="color: #8a8d98;">
+                            <i class="fa-solid fa-circle-user me-1"></i>
+                            <strong class="text-white">{{ user.username }}</strong>
+                        </a>
                         
                         <a href="{% url 'crear_torneo' %}" class="btn btn-purple-custom">
                             <i class="fa-solid fa-plus icon-spacing"></i> Crear Torneo

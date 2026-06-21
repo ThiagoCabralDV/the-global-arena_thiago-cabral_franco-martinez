@@ -54,12 +54,21 @@
 
         {% if user.is_authenticated %}
             {% if user != torneo.organizador %}
-                <form method="POST" action="{% url 'inscribir_torneo' torneo.id %}">
-                    {% csrf_token %}
-                    <button type="submit" class="btn btn-purple-custom fw-bold">
-                        <i class="fa-solid fa-user-plus me-2"></i> Inscribirme
-                    </button>
-                </form>
+                {% if inscripto %}
+                    <form method="POST" action="{% url 'desinscribir_torneo' torneo.id %}">
+                        {% csrf_token %}
+                        <button type="submit" class="btn btn-outline-danger fw-bold">
+                            <i class="fa-solid fa-user-minus me-2"></i> Desinscribirme
+                        </button>
+                    </form>
+                {% else %}
+                    <form method="POST" action="{% url 'inscribir_torneo' torneo.id %}">
+                        {% csrf_token %}
+                        <button type="submit" class="btn btn-purple-custom fw-bold">
+                            <i class="fa-solid fa-user-plus me-2"></i> Inscribirme
+                        </button>
+                    </form>
+                {% endif %}
             {% else %}
                 <span class="text-muted small">Sos el organizador de este torneo.</span>
             {% endif %}

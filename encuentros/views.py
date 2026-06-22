@@ -3,6 +3,7 @@ from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from .models import Encuentro
 from .forms import ResultadoForm
+from torneos.services import verificar_y_avanzar_fase
 
 @login_required
 def cargar_resultado(request, encuentro_id):
@@ -25,9 +26,13 @@ def cargar_resultado(request, encuentro_id):
                 encuentro = form.save(commit=False)
                 encuentro.save()
                 encuentro.determinar_ganador()
+                verificar_y_avanzar_fase(encuentro.torneo)
                 messages.success(request, f'Resultado cargado. Ganador: {encuentro.ganador.username}')
                 return redirect('ver_bracket', torneo_id=encuentro.torneo.id)
     else:
         form = ResultadoForm(instance=encuentro)
 
-    return render(request, 'encuentros/cargar_resultado.html', {'form': form, 'encuentro': encuentro})
+    return render(request, 'encuentros/cargar_resultado.html', {
+        'form': form,
+        'encuentro': encuentro
+    })

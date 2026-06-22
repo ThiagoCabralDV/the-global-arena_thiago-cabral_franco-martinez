@@ -8,4 +8,6 @@ urlpatterns = [
     path('torneos/<int:torneo_id>/', views.detalle_torneo, name='detalle_torneo'),
     path('torneos/<int:torneo_id>/inscribir/', views.inscribir_torneo, name='inscribir_torneo'),
     path('torneos/<int:torneo_id>/desinscribir/', views.desinscribir_torneo, name='desinscribir_torneo'),
+    path('torneos/<int:torneo_id>/generar-bracket/', views.generar_bracket, name='generar_bracket'),
+    path('torneos/<int:torneo_id>/bracket/', views.ver_bracket, name='ver_bracket'),
 ]

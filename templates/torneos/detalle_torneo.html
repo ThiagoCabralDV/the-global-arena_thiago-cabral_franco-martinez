@@ -18,30 +18,36 @@
 
         <div class="row mb-4">
             <div class="col-md-4">
-                <p class="text-muted small mb-1"><i class="fa-solid fa-gamepad me-1"></i> Videojuego</p>
-                <p class="text-white">{{ torneo.videojuego.nombre }}</p>
+                <p class="text-white-50 small mb-1"><i class="fa-solid fa-gamepad me-1"></i> Videojuego</p>
+                <p class="text-white fw-semibold">{{ torneo.videojuego.nombre }}</p>
             </div>
             <div class="col-md-4">
-                <p class="text-muted small mb-1"><i class="fa-solid fa-calendar me-1"></i> Fecha de inicio</p>
-                <p class="text-white">{{ torneo.fecha_inicio|date:"d/m/Y H:i" }}</p>
+                <p class="text-white-50 small mb-1"><i class="fa-solid fa-calendar me-1"></i> Fecha de inicio</p>
+                <p class="text-white fw-semibold">{{ torneo.fecha_inicio|date:"d/m/Y H:i" }}</p>
             </div>
             <div class="col-md-4">
-                <p class="text-muted small mb-1"><i class="fa-solid fa-users me-1"></i> Cupo máximo</p>
-                <p class="text-white">{{ torneo.cupo_maximo }} jugadores</p>
+                <p class="text-white-50 small mb-1"><i class="fa-solid fa-users me-1"></i> Cupo máximo</p>
+                <p class="text-white fw-semibold">{{ torneo.cupo_maximo }} jugadores</p>
             </div>
         </div>
 
         {% if torneo.descripcion %}
         <div class="mb-4">
-            <p class="text-muted small mb-1"><i class="fa-solid fa-align-left me-1"></i> Descripción</p>
+            <p class="text-white-50 small mb-1"><i class="fa-solid fa-align-left me-1"></i> Descripción</p>
             <p class="text-white">{{ torneo.descripcion }}</p>
         </div>
         {% endif %}
 
-        <p class="text-muted small mb-4">
-            <i class="fa-solid fa-user me-1"></i> Organizador:
-            <span class="text-white">{{ torneo.organizador.username }}</span>
-        </p>
+        <div class="mb-4">
+            <p class="text-white mb-2">
+                <i class="fa-solid fa-user text-white-50 me-1"></i> <span class="text-white-50">Organizador:</span> 
+                <span class="fw-semibold">{{ torneo.organizador.username }}</span>
+            </p>
+            <p class="text-white mb-0">
+                <i class="fa-solid fa-users text-white-50 me-1"></i> <span class="text-white-50">Cupos disponibles:</span> 
+                <span class="fw-bold text-purple-custom">{{ cupos_disponibles }}</span> <span class="text-white-50">/ {{ torneo.cupo_maximo }}</span>
+            </p>
+        </div>
 
         {% if messages %}
             {% for message in messages %}
@@ -52,17 +58,21 @@
             {% endfor %}
         {% endif %}
 
-        {% if user.is_authenticated %}
-            {% if user != torneo.organizador %}
-                {% if inscripto %}
-                    <form method="POST" action="{% url 'desinscribir_torneo' torneo.id %}">
+        <div class="d-flex flex-wrap gap-2 align-items-center">
+            {% if user.is_authenticated %}
+                {% if user == torneo.organizador %}
+                    <span class="text-white-50 small me-2">Sos el organizador de este torneo.</span>
+                {% elif inscripto %}
+                    <form method="POST" action="{% url 'desinscribir_torneo' torneo.id %}" class="d-inline">
                         {% csrf_token %}
                         <button type="submit" class="btn btn-outline-danger fw-bold">
                             <i class="fa-solid fa-user-minus me-2"></i> Desinscribirme
                         </button>
                     </form>
+                {% elif cupos_disponibles <= 0 %}
+                    <span class="badge bg-secondary py-2 px-3">Cupo lleno</span>
                 {% else %}
-                    <form method="POST" action="{% url 'inscribir_torneo' torneo.id %}">
+                    <form method="POST" action="{% url 'inscribir_torneo' torneo.id %}" class="d-inline">
                         {% csrf_token %}
                         <button type="submit" class="btn btn-purple-custom fw-bold">
                             <i class="fa-solid fa-user-plus me-2"></i> Inscribirme
@@ -70,12 +80,43 @@
                     </form>
                 {% endif %}
             {% else %}
-                <span class="text-muted small">Sos el organizador de este torneo.</span>
+                <a href="{% url 'login' %}" class="btn btn-outline-light">
+                    Iniciá sesión para inscribirte
+                </a>
             {% endif %}
+
+            {% if user == torneo.organizador %}
+                {% if torneo.fases.exists %}
+                    <a href="{% url 'ver_bracket' torneo.id %}" class="btn btn-outline-light">
+                        <i class="fa-solid fa-sitemap me-1"></i> Ver Bracket
+                    </a>
+                {% else %}
+                    <a href="{% url 'generar_bracket' torneo.id %}" class="btn btn-purple-custom">
+                        <i class="fa-solid fa-sitemap me-1"></i> Generar Bracket
+                    </a>
+                {% endif %}
+            {% elif torneo.fases.exists %}
+                <a href="{% url 'ver_bracket' torneo.id %}" class="btn btn-outline-light">
+                    <i class="fa-solid fa-sitemap me-1"></i> Ver Bracket
+                </a>
+            {% endif %}
+        </div>
+    </div>
+
+    <div class="p-4 rounded-3 mt-4" style="background: #1a1a2e; border: 1px solid #2d2d4e;">
+        <h5 class="text-white fw-bold mb-3">
+            <i class="fa-solid fa-users me-2"></i> Jugadores inscritos ({{ inscripciones.count }})
+        </h5>
+        {% if inscripciones %}
+            <ul class="list-unstyled mb-0">
+                {% for inscripcion in inscripciones %}
+                <li class="text-white py-2 border-bottom" style="border-color: #2d2d4e !important;">
+                    <i class="fa-solid fa-user-ninja me-2 text-purple-custom"></i> {{ inscripcion.usuario.username }}
+                </li>
+                {% endfor %}
+            </ul>
         {% else %}
-            <a href="{% url 'login' %}" class="btn btn-outline-light">
-                Iniciá sesión para inscribirte
-            </a>
+            <p class="text-white-50 small mb-0">Todavía no hay jugadores inscritos.</p>
         {% endif %}
     </div>
 

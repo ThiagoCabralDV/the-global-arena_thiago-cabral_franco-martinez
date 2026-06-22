@@ -1,19 +1,65 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
+from django.db.models import Count, Q                 # <- NUEVOS IMPORTS PARA LOS CONTADORES Y FILTROS
+from django.contrib.auth.models import User           # <- NUEVO IMPORT PARA EL TOP DE JUGADORES
 from .models import Torneo
 from .forms import TorneoForm
 from .singleton.tournament_manager import TournamentManager
 from .strategies import SingleEliminationStrategy  # Patrón Strategy
 from inscripciones.models import Inscripcion
+from encuentros.models import Encuentro               # <- NUEVO IMPORT PARA TRAER LOS COMBATES
 
 # ==========================================
 # VISTAS BASE DE TORNEOS
 # ==========================================
 
 def index(request):
-    torneos_recientes = Torneo.objects.all().order_by('-fecha_inicio')[:3]
-    return render(request, 'index.html', {'torneos_recientes': torneos_recientes})
+    # 1. Contadores dinámicos para el Hero
+    total_torneos = Torneo.objects.count()
+    total_jugadores = User.objects.count()
+    total_combates = Encuentro.objects.count()
+
+    # 2. Torneos Destacados: Traemos los 3 más recientes/próximos
+    # Anotamos el conteo de inscripciones para mostrar cuántos jugadores van dinámicamente
+    torneos_destacados = Torneo.objects.annotate(
+        total_inscritos=Count('inscripciones', distinct=True)
+    ).order_by('-fecha_inicio')[:3]
+
+    # 3. Top Jugadores: Adaptamos la lógica de Franco para sacar el Top 4
+    jugadores = User.objects.filter(
+        Q(encuentros_j1__isnull=False) | Q(encuentros_j2__isnull=False)
+    ).distinct()
+
+    stats = []
+    for j in jugadores:
+        total_fin = Encuentro.objects.filter(
+            Q(jugador1=j) | Q(jugador2=j), estado=Encuentro.Estado.FINALIZADO
+        ).count()
+        wins = Encuentro.objects.filter(ganador=j, estado=Encuentro.Estado.FINALIZADO).count()
+        losses = total_fin - wins
+        win_pct = round((wins / total_fin * 100), 1) if total_fin > 0 else 0
+        
+        stats.append({
+            'jugador': j,
+            'wins': wins,
+            'losses': losses,
+            'win_pct': win_pct,
+        })
+
+    # Ordenamos por más victorias y mejor winrate (igual que Franco) y agarramos los 4 mejores
+    stats.sort(key=lambda x: (-x['wins'], -x['win_pct']))
+    top_jugadores = stats[:4]
+
+    context = {
+        'total_torneos': total_torneos,
+        'total_jugadores': total_jugadores,
+        'total_combates': total_combates,
+        'torneos_destacados': torneos_destacados,
+        'top_jugadores': top_jugadores,
+    }
+
+    return render(request, 'index.html', context)
 
 def lista_torneos(request):
     torneos = Torneo.objects.all().order_by('-fecha_inicio')

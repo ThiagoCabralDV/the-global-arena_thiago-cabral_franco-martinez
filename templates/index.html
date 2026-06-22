@@ -4,6 +4,7 @@
 {% block content %}
 <link rel="stylesheet" href="{% static 'torneos/css/index.css' %}">
 
+<!-- HERO SECTION -->
 <section class="hero-section">
     <div class="container">
         <div class="row align-items-center">
@@ -16,28 +17,29 @@
                     Compite en torneos de juegos de pelea, demuestra tu habilidad y escala en el ranking de la comunidad FGC más grande.
                 </p>
                 <div class="d-flex gap-3 mb-5">
-                    <a href="#" class="btn btn-purple-custom px-4 py-2"><i class="fa-solid fa-fire me-1.5"></i> Ver Torneos</a>
-                    <a href="#" class="btn btn-outline-secondary px-4 py-2 text-white border-secondary" style="background-color: rgba(255,255,255,0.02);"><i class="fa-solid fa-bolt me-1.5"></i> Rankings</a>
+                    <a href="{% url 'lista_torneos' %}" class="btn btn-purple-custom px-4 py-2"><i class="fa-solid fa-fire me-1.5"></i> Ver Torneos</a>
+                    <a href="{% url 'rendimiento_jugadores' %}" class="btn btn-outline-secondary px-4 py-2 text-white border-secondary" style="background-color: rgba(255,255,255,0.02);"><i class="fa-solid fa-bolt me-1.5"></i> Rankings</a>
                 </div>
             </div>
         </div>
 
+        <!-- CONTADORES DINÁMICOS -->
         <div class="row justify-content-center">
             <div class="col-12">
                 <div class="counters-container p-4 d-flex flex-wrap justify-content-around text-center gap-4">
                     <div>
                         <i class="fa-solid fa-trophy mb-2" style="color: #7c3aed; font-size: 1.2rem;"></i>
-                        <h4 class="fw-bold text-white mb-0">100+</h4>
+                        <h4 class="fw-bold text-white mb-0">{{ total_torneos }}</h4>
                         <span class="text-muted small" style="font-size: 0.8rem;">Torneos</span>
                     </div>
                     <div>
                         <i class="fa-solid fa-user-group mb-2" style="color: #7c3aed; font-size: 1.2rem;"></i>
-                        <h4 class="fw-bold text-white mb-0">2,500+</h4>
+                        <h4 class="fw-bold text-white mb-0">{{ total_jugadores }}</h4>
                         <span class="text-muted small" style="font-size: 0.8rem;">Jugadores</span>
                     </div>
                     <div>
                         <i class="fa-solid fa-gamepad mb-2" style="color: #7c3aed; font-size: 1.2rem;"></i>
-                        <h4 class="fw-bold text-white mb-0">10,000+</h4>
+                        <h4 class="fw-bold text-white mb-0">{{ total_combates }}</h4>
                         <span class="text-muted small" style="font-size: 0.8rem;">Combates</span>
                     </div>
                 </div>
@@ -46,178 +48,98 @@
     </div>
 </section>
 
+<!-- SECCIÓN TORNEOS DESTACADOS -->
 <section class="container my-5 pt-4">
     <div class="d-flex justify-content-between align-items-center mb-4">
         <div>
             <h3 class="fw-bold text-white mb-1" style="font-size: 1.5rem;">Torneos Destacados</h3>
             <p class="text-muted small mb-0">Los últimos torneos de la comunidad</p>
         </div>
-        <a href="#" class="text-decoration-none small fw-semibold" style="color: #905cf7;">Ver todos <i class="fa-solid fa-chevron-right ms-1" style="font-size: 0.75rem;"></i></a>
+        <a href="{% url 'lista_torneos' %}" class="text-decoration-none small fw-semibold" style="color: #905cf7;">Ver todos <i class="fa-solid fa-chevron-right ms-1" style="font-size: 0.75rem;"></i></a>
     </div>
 
     <div class="row g-4">
+        {% for torneo in torneos_destacados %}
         <div class="col-md-4">
             <div class="card-custom h-100 d-flex flex-column p-3">
                 <div class="card-img-placeholder rounded-3 mb-3">
                     <i class="fa-solid fa-trophy fs-2 text-muted opacity-20"></i>
                 </div>
                 <div class="d-flex justify-content-between align-items-center mb-2.5">
-                    <span class="badge badge-game rounded-pill px-2.5 py-1">Super Smash Bros Ultimate</span>
-                    <span class="badge badge-upcoming rounded-pill px-2.5 py-1">Próximo</span>
+                    <span class="badge badge-game rounded-pill px-2.5 py-1">{{ torneo.videojuego }}</span>
+                    <!-- Acá evaluamos dinámicamente el estado si usás la propiedad/opciones del modelo -->
+                    <span class="badge badge-upcoming rounded-pill px-2.5 py-1">Inscripciones</span>
                 </div>
-                <h5 class="fw-bold text-white mb-1" style="font-size: 1.1rem;">UY</h5>
-                <p class="text-muted small flex-grow-1 mb-3">wewewe</p>
+                <h5 class="fw-bold text-white mb-1" style="font-size: 1.1rem;">{{ torneo.nombre }}</h5>
+                <p class="text-muted small flex-grow-1 mb-3">{{ torneo.descripcion|truncatewords:15 }}</p>
                 <div class="d-flex justify-content-between text-muted border-top border-dark pt-2.5" style="font-size: 0.8rem; border-color: #1c1e24 !important;">
-                    <span><i class="fa-solid fa-calendar me-1.5"></i> 11 jun 4222</span>
-                    <span><i class="fa-solid fa-users me-1.5"></i> 5 jugadores</span>
-                    <span><i class="fa-solid fa-location-dot me-1.5"></i> South America</span>
+                    <span><i class="fa-solid fa-calendar me-1.5"></i> {{ torneo.fecha_inicio|date:"d M Y" }}</span>
+                    <span><i class="fa-solid fa-users me-1.5"></i> {{ torneo.total_inscritos }} jugadores</span>
+                    <!-- Reincorporado el campo de región/ubicación por si tu modelo lo maneja (ej: torneo.region o torneo.ubicacion) -->
+                    {% if torneo.region %}
+                    <span><i class="fa-solid fa-location-dot me-1.5"></i> {{ torneo.region }}</span>
+                    {% endif %}
                 </div>
             </div>
         </div>
-
-        <div class="col-md-4">
-            <div class="card-custom h-100 d-flex flex-column p-3">
-                <div class="card-img-placeholder rounded-3 mb-3" style="background-color: #1a1525; border-color: rgba(144,92,247,0.15);">
-                    <span class="text-purple fw-bold small" style="color: #905cf7;"><i class="fa-solid fa-image me-1"></i> [Banner Tekken 8]</span>
-                </div>
-                <div class="d-flex justify-content-between align-items-center mb-2.5">
-                    <span class="badge badge-game rounded-pill px-2.5 py-1">Tekken 8</span>
-                    <span class="badge badge-live rounded-pill px-2.5 py-1">En Vivo</span>
-                </div>
-                <h5 class="fw-bold text-white mb-1" style="font-size: 1.1rem;">Iron Fist Championship</h5>
-                <p class="text-muted small flex-grow-1 mb-3">El torneo definitivo de Tekken 8. Combate cuerpo a cuerpo al más alto nivel con los mejores jugadores de la región...</p>
-                <div class="d-flex justify-content-between text-muted border-top border-dark pt-2.5" style="font-size: 0.8rem; border-color: #1c1e24 !important;">
-                    <span><i class="fa-solid fa-calendar me-1.5"></i> 9 abr 2026</span>
-                    <span><i class="fa-solid fa-users me-1.5"></i> 32 jugadores</span>
-                    <span><i class="fa-solid fa-location-dot me-1.5"></i> North America</span>
-                </div>
-            </div>
+        {% empty %}
+        <div class="col-12 text-center text-muted py-4">
+            <p>No hay torneos registrados en este momento.</p>
         </div>
-
-        <div class="col-md-4">
-            <div class="card-custom h-100 d-flex flex-column p-3">
-                <div class="card-img-placeholder rounded-3 mb-3">
-                    <i class="fa-solid fa-trophy fs-2 text-muted opacity-20"></i>
-                </div>
-                <div class="d-flex justify-content-between align-items-center mb-2.5">
-                    <span class="badge badge-game rounded-pill px-2.5 py-1">Super Smash Bros Ultimate</span>
-                    <span class="badge badge-upcoming rounded-pill px-2.5 py-1">Próximo</span>
-                </div>
-                <h5 class="fw-bold text-white mb-1" style="font-size: 1.1rem;">Smash Legends Cup</h5>
-                <p class="text-muted small flex-grow-1 mb-3">El torneo trimestral de Super Smash Bros Ultimate que reúne a los mejores jugadores. Clasificatoria para el circuito nacion...</p>
-                <div class="d-flex justify-content-between text-muted border-top border-dark pt-2.5" style="font-size: 0.8rem; border-color: #1c1e24 !important;">
-                    <span><i class="fa-solid fa-calendar me-1.5"></i> 30 abr 2026</span>
-                    <span><i class="fa-solid fa-users me-1.5"></i> 128 jugadores</span>
-                    <span><i class="fa-solid fa-location-dot me-1.5"></i> North America</span>
-                </div>
-            </div>
-        </div>
+        {% endfor %}
     </div>
 </section>
 
+<!-- SECCIÓN TOP JUGADORES -->
 <section class="container my-5 py-4">
     <div class="d-flex justify-content-between align-items-center mb-4">
         <div>
             <h3 class="fw-bold text-white mb-1" style="font-size: 1.5rem;">Top Jugadores</h3>
             <p class="text-muted small mb-0">Los mejores competidores del ranking</p>
         </div>
-        <a href="#" class="text-decoration-none small fw-semibold" style="color: #905cf7;">Ver todos <i class="fa-solid fa-chevron-right ms-1" style="font-size: 0.75rem;"></i></a>
+        <a href="{% url 'rendimiento_jugadores' %}" class="text-decoration-none small fw-semibold" style="color: #905cf7;">Ver todos <i class="fa-solid fa-chevron-right ms-1" style="font-size: 0.75rem;"></i></a>
     </div>
 
     <div class="row g-4">
+        {% for stat in top_jugadores %}
         <div class="col-md-3">
             <div class="player-card p-3">
                 <div class="d-flex align-items-center gap-3 mb-3">
-                    <div class="avatar-circle" style="background-color: #2e1f4d;">S</div>
+                    <div class="avatar-circle" style="background-color: #2e1f4d;">{{ stat.jugador.username|slice:":1"|upper }}</div>
                     <div>
-                        <h6 class="fw-bold text-white mb-0">ShadowKing</h6>
-                        <span class="text-muted" style="font-size: 0.75rem;">Ronin Gaming · Japón</span>
+                        <h6 class="fw-bold text-white mb-0">{{ stat.jugador.username }}</h6>
+                        <span class="text-muted" style="font-size: 0.75rem;">Competidor Global</span>
                     </div>
                 </div>
+                <!-- Badges limpios adaptados al backend -->
                 <div class="d-flex gap-1.5 mb-3">
-                    <span class="badge border border-dark rounded px-2 py-1 text-muted" style="font-size: 0.7rem; background-color: #16181f;"><i class="fa-solid fa-gamepad text-purple"></i> Tekken 8</span>
-                    <span class="badge border border-dark rounded px-2 py-1 text-muted" style="font-size: 0.7rem; background-color: #16181f;">Kazuya</span>
+                    <span class="badge border border-dark rounded px-2 py-1 text-muted" style="font-size: 0.7rem; background-color: #16181f;"><i class="fa-solid fa-gamepad text-purple"></i> FGC Player</span>
+                    <span class="badge border border-dark rounded px-2 py-1 text-muted" style="font-size: 0.7rem; background-color: #16181f;">Ranked</span>
                 </div>
                 <div class="row g-2 text-center">
-                    <div class="col-4"><div class="stat-box"><span class="text-muted d-block" style="font-size: 0.65rem;">Victorias</span><strong class="text-success small">203</strong></div></div>
-                    <div class="col-4"><div class="stat-box"><span class="text-muted d-block" style="font-size: 0.65rem;">Derrotas</span><strong class="text-danger small">41</strong></div></div>
-                    <div class="col-4"><div class="stat-box"><span class="text-muted d-block" style="font-size: 0.65rem;">Win %</span><strong class="text-white small">83%</strong></div></div>
+                    <div class="col-4"><div class="stat-box"><span class="text-muted d-block" style="font-size: 0.65rem;">Victorias</span><strong class="text-success small">{{ stat.wins }}</strong></div></div>
+                    <div class="col-4"><div class="stat-box"><span class="text-muted d-block" style="font-size: 0.65rem;">Derrotas</span><strong class="text-danger small">{{ stat.losses }}</strong></div></div>
+                    <div class="col-4"><div class="stat-box"><span class="text-muted d-block" style="font-size: 0.65rem;">Win %</span><strong class="text-white small">{{ stat.win_pct }}%</strong></div></div>
                 </div>
             </div>
         </div>
-
-        <div class="col-md-3">
-            <div class="player-card p-3">
-                <div class="d-flex align-items-center gap-3 mb-3">
-                    <div class="avatar-circle" style="background-color: #1b3547;">F</div>
-                    <div>
-                        <h6 class="fw-bold text-white mb-0">Fenix_FGC</h6>
-                        <span class="text-muted" style="font-size: 0.75rem;">Thunder Esports · México</span>
-                    </div>
-                </div>
-                <div class="d-flex gap-1.5 mb-3">
-                    <span class="badge border border-dark rounded px-2 py-1 text-muted" style="font-size: 0.7rem; background-color: #16181f;"><i class="fa-solid fa-gamepad text-purple"></i> Street Fighter 6</span>
-                    <span class="badge border border-dark rounded px-2 py-1 text-muted" style="font-size: 0.7rem; background-color: #16181f;">Ryu</span>
-                </div>
-                <div class="row g-2 text-center">
-                    <div class="col-4"><div class="stat-box"><span class="text-muted d-block" style="font-size: 0.65rem;">Victorias</span><strong class="text-success small">156</strong></div></div>
-                    <div class="col-4"><div class="stat-box"><span class="text-muted d-block" style="font-size: 0.65rem;">Derrotas</span><strong class="text-danger small">34</strong></div></div>
-                    <div class="col-4"><div class="stat-box"><span class="text-muted d-block" style="font-size: 0.65rem;">Win %</span><strong class="text-white small">82%</strong></div></div>
-                </div>
-            </div>
+        {% empty %}
+        <div class="col-12 text-center text-muted py-4">
+            <p>Aún no hay estadísticas de combates para armar el ranking.</p>
         </div>
-
-        <div class="col-md-3">
-            <div class="player-card p-3">
-                <div class="d-flex align-items-center gap-3 mb-3">
-                    <div class="avatar-circle" style="background-color: #242b35;">N</div>
-                    <div>
-                        <h6 class="fw-bold text-white mb-0">NeonBlade</h6>
-                        <span class="text-muted" style="font-size: 0.75rem;">Aurora Gaming · Canadá</span>
-                    </div>
-                </div>
-                <div class="d-flex gap-1.5 mb-3">
-                    <span class="badge border border-dark rounded px-2 py-1 text-muted" style="font-size: 0.7rem; background-color: #16181f;"><i class="fa-solid fa-gamepad text-purple"></i> Super Smash Bros</span>
-                    <span class="badge border border-dark rounded px-2 py-1 text-muted" style="font-size: 0.7rem; background-color: #16181f;">Joker</span>
-                </div>
-                <div class="row g-2 text-center">
-                    <div class="col-4"><div class="stat-box"><span class="text-muted d-block" style="font-size: 0.65rem;">Victorias</span><strong class="text-success small">189</strong></div></div>
-                    <div class="col-4"><div class="stat-box"><span class="text-muted d-block" style="font-size: 0.65rem;">Derrotas</span><strong class="text-danger small">43</strong></div></div>
-                    <div class="col-4"><div class="stat-box"><span class="text-muted d-block" style="font-size: 0.65rem;">Win %</span><strong class="text-white small">81%</strong></div></div>
-                </div>
-            </div>
-        </div>
-
-        <div class="col-md-3">
-            <div class="player-card p-3">
-                <div class="d-flex align-items-center gap-3 mb-3">
-                    <div class="avatar-circle" style="background-color: #361a30;">V</div>
-                    <div>
-                        <h6 class="fw-bold text-white mb-0">ViperQueen</h6>
-                        <span class="text-muted" style="font-size: 0.75rem;">Neon Wolves · Rusia</span>
-                    </div>
-                </div>
-                <div class="d-flex gap-1.5 mb-3">
-                    <span class="badge border border-dark rounded px-2 py-1 text-muted" style="font-size: 0.7rem; background-color: #16181f;"><i class="fa-solid fa-gamepad text-purple"></i> Guilty Gear Strive</span>
-                    <span class="badge border border-dark rounded px-2 py-1 text-muted" style="font-size: 0.7rem; background-color: #16181f;">Ramlethal</span>
-                </div>
-                <div class="row g-2 text-center">
-                    <div class="col-4"><div class="stat-box"><span class="text-muted d-block" style="font-size: 0.65rem;">Victorias</span><strong class="text-success small">178</strong></div></div>
-                    <div class="col-4"><div class="stat-box"><span class="text-muted d-block" style="font-size: 0.65rem;">Derrotas</span><strong class="text-danger small">52</strong></div></div>
-                    <div class="col-4"><div class="stat-box"><span class="text-muted d-block" style="font-size: 0.65rem;">Win %</span><strong class="text-white small">77%</strong></div></div>
-                </div>
-            </div>
-        </div>
+        {% endfor %}
     </div>
 </section>
 
+<!-- CALL TO ACTION (CTA) -->
 <section class="container my-5 text-center">
     <div class="cta-container p-5">
         <h2 class="fw-bold text-white mb-3" style="font-size: 1.8rem;">¿Listo para competir?</h2>
         <p class="text-muted mx-auto mb-4 small" style="max-width: 500px; line-height: 1.6;">
             Regístrate y crea tus propios torneos, invita jugadores y lleva la competencia al siguiente nivel.
         </p>
-        <button class="btn btn-purple-custom px-4 py-2">Explorar Torneos <i class="fa-solid fa-arrow-right ms-1"></i></button>
+        <!-- Se corrigió de <button> a <a> para que funcione efectivamente como un enlace funcional -->
+        <a href="{% url 'lista_torneos' %}" class="btn btn-purple-custom px-4 py-2">Explorar Torneos <i class="fa-solid fa-arrow-right ms-1"></i></a>
     </div>
 </section>
 

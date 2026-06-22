@@ -1,0 +1,138 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Editar Perfil - ArenaFGC{% endblock %}
+
+{% block content %}
+<div class="container mt-5 mb-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="text-center mb-4">
+                <h2 class="text-white fw-bold">
+                    <i class="fa-solid fa-user-pen brand-accent me-2"></i> Editar Perfil
+                </h2>
+                <p class="small" style="color: #a78bfa;">Actualizá tu información personal</p>
+            </div>
+
+            <div class="p-4 rounded-3" style="background: #1a1a2e; border: 1px solid #2d2d4e;">
+                {% if messages %}
+                    {% for message in messages %}
+                        <div class="alert py-2 small {% if message.tags == 'error' %}alert-danger{% else %}alert-success{% endif %}">
+                            {{ message }}
+                        </div>
+                    {% endfor %}
+                {% endif %}
+
+                <form method="POST" enctype="multipart/form-data">
+                    {% csrf_token %}
+
+                    <h5 class="text-white fw-bold mb-3" style="font-size: 1rem;">
+                        <i class="fa-solid fa-user me-2 brand-accent"></i> Información básica
+                    </h5>
+
+                    <div class="row mb-3">
+                        <div class="col-md-6 mb-3">
+                            <label class="text-white small mb-1">Nombre</label>
+                            {{ user_form.first_name }}
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label class="text-white small mb-1">Apellido</label>
+                            {{ user_form.last_name }}
+                        </div>
+                    </div>
+
+                    <div class="mb-4">
+                        <label class="text-white small mb-1">Correo electrónico</label>
+                        {{ user_form.email }}
+                    </div>
+
+                    <hr style="border-color: #2d2d4e;">
+
+                    <h5 class="text-white fw-bold mb-3 mt-4" style="font-size: 1rem;">
+                        <i class="fa-solid fa-address-card me-2 brand-accent"></i> Información del perfil
+                    </h5>
+
+                    <div class="mb-3">
+                        <label class="text-white small mb-1">Foto de perfil</label>
+                        {% if user.profile.foto_perfil %}
+                            <div class="mb-2">
+                                <img src="{{ user.profile.foto_perfil.url }}" alt="Foto actual"
+                                     style="width: 80px; height: 80px; object-fit: cover; border-radius: 50%; border: 2px solid #7c3aed;">
+                            </div>
+                        {% endif %}
+                        {{ profile_form.foto_perfil }}
+                        {% if profile_form.foto_perfil.help_text %}
+                            <div class="small mt-1" style="color: #a78bfa;">{{ profile_form.foto_perfil.help_text }}</div>
+                        {% endif %}
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="text-white small mb-1">Bio</label>
+                        {{ profile_form.bio }}
+                    </div>
+
+                    <div class="row mb-3">
+                        <div class="col-md-6 mb-3">
+                            <label class="text-white small mb-1">Teléfono</label>
+                            {{ profile_form.telefono }}
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label class="text-white small mb-1">País</label>
+                            {{ profile_form.pais }}
+                        </div>
+                    </div>
+
+                    <div class="mb-4">
+                        <label class="text-white small mb-1">Fecha de nacimiento</label>
+                        {{ profile_form.fecha_nacimiento }}
+                    </div>
+
+                    <button type="submit" class="btn btn-purple-custom w-100 fw-bold">
+                        <i class="fa-solid fa-floppy-disk me-2"></i> Guardar cambios
+                    </button>
+                </form>
+
+                <div class="text-center mt-3">
+                    <a href="{% url 'ver_perfil' %}" class="text-decoration-none small" style="color: #905cf7;">
+                        <i class="fa-solid fa-arrow-left me-1"></i> Volver al perfil
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+.form-control-dark, .form-select-dark {
+    background: #0f0f1a;
+    border: 1px solid #2d2d4e;
+    color: white;
+}
+.form-control-dark:focus {
+    background: #0f0f1a;
+    border-color: #7c3aed;
+    color: white;
+    box-shadow: 0 0 0 0.2rem rgba(124, 58, 237, 0.25);
+}
+input[type="file"]::file-selector-button {
+    background: #7c3aed;
+    color: white;
+    border: none;
+    padding: 0.3rem 0.8rem;
+    border-radius: 6px;
+    font-size: 0.8rem;
+    cursor: pointer;
+}
+input[type="file"]::file-selector-button:hover {
+    background: #6d28d9;
+}
+input[type="file"] {
+    color: #c4b5fd;
+}
+.form-control-dark::placeholder,
+.form-select-dark::placeholder {
+    color: #a78bfa;
+    opacity: 0.7;
+}
+</style>
+{% endblock %}

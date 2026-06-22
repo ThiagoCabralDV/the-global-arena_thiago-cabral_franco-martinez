@@ -105,8 +105,8 @@
 .card-custom .text-muted,
 .player-card .text-muted,
 .cta-container .text-muted {
-    color: #94a3b8 !important;
+    color: #cbd5e1 !important;
     --bs-text-opacity: 1 !important; 
 }
-.player-card span { color: #94a3b8 !important; }
+.player-card span { color: #cbd5e1 !important; }
 .card-custom .text-muted i { color: #905cf7 !important; }

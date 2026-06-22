@@ -4,9 +4,13 @@
 
 body {
     background-color: #0b0c10;
-    color: #b9bbbe;
+    color: #d1d5db;
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     overflow-x: hidden;
+}
+
+.text-muted {
+    color: #9ca3af !important;
 }
 
 /* --- Layout de la Barra de Navegación --- */
@@ -27,7 +31,7 @@ body {
 }
 
 .nav-link-custom {
-    color: #8a8d98;
+    color: #a3a6b0;
     font-weight: 500;
     font-size: 0.9rem;
     transition: 0.2s;
@@ -47,7 +51,7 @@ body {
 /* Enlaces de Sesión / Autenticación */
 .logout-link {
     text-decoration: none;
-    color: #8a8d98;
+    color: #a3a6b0;
     font-weight: 500;
     font-size: 0.875rem;
     white-space: nowrap;
@@ -97,7 +101,7 @@ body {
 .footer-custom {
     background-color: #0d0e12;
     border-top: 1px solid #16181f;
-    color: #62656c;
+    color: #8a8d98;
     font-size: 0.9rem;
 }
 
@@ -107,7 +111,7 @@ body {
 .sub-icon { font-size: 0.75rem; }
 
 .footer-link {
-    color: #62656c;
+    color: #8a8d98;
     text-decoration: none;
     transition: 0.2s;
 }
@@ -117,7 +121,7 @@ body {
 
 .social-btn {
     background-color: #16181f;
-    color: #62656c;
+    color: #8a8d98;
     border: 1px solid #222530;
     width: 36px;
     height: 36px;

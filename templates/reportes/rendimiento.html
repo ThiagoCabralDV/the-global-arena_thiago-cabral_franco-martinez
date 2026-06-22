@@ -1,0 +1,65 @@
+{% extends 'base.html' %}
+
+{% block title %}Rendimiento - ArenaFGC{% endblock %}
+
+{% block content %}
+<div class="container mt-5 mb-5">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2 class="text-white fw-bold">
+            <i class="fa-solid fa-ranking-star me-2 brand-accent"></i> Rendimiento de Jugadores
+        </h2>
+    </div>
+
+    {% if stats %}
+    <div class="table-responsive">
+        <table class="table table-dark align-middle" style="background: #1a1a2e; border-radius: 10px; overflow: hidden;">
+            <thead style="background: #12132a;">
+                <tr>
+                    <th class="small text-muted ps-4">#</th>
+                    <th class="small text-muted">Jugador</th>
+                    <th class="small text-muted text-center">Encuentros</th>
+                    <th class="small text-muted text-center">Victorias</th>
+                    <th class="small text-muted text-center">Derrotas</th>
+                    <th class="small text-muted text-center">Win %</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for s in stats %}
+                <tr style="border-color: #2d2d4e;">
+                    <td class="ps-4">
+                        {% if forloop.counter == 1 %}
+                            <span class="badge" style="background: #ffd700; color: #000;">1</span>
+                        {% elif forloop.counter == 2 %}
+                            <span class="badge" style="background: #c0c0c0; color: #000;">2</span>
+                        {% elif forloop.counter == 3 %}
+                            <span class="badge" style="background: #cd7f32; color: #000;">3</span>
+                        {% else %}
+                            <span class="text-muted">{{ forloop.counter }}</span>
+                        {% endif %}
+                    </td>
+                    <td class="text-white fw-bold">{{ s.jugador.username }}</td>
+                    <td class="text-center text-white">{{ s.total }}</td>
+                    <td class="text-center text-success fw-bold">{{ s.wins }}</td>
+                    <td class="text-center text-danger">{{ s.losses }}</td>
+                    <td class="text-center">
+                        {% if s.win_pct >= 70 %}
+                            <span class="badge bg-success fs-6">{{ s.win_pct }}%</span>
+                        {% elif s.win_pct >= 50 %}
+                            <span class="badge bg-warning text-dark fs-6">{{ s.win_pct }}%</span>
+                        {% else %}
+                            <span class="badge bg-danger fs-6">{{ s.win_pct }}%</span>
+                        {% endif %}
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    {% else %}
+    <div class="text-center text-muted mt-5">
+        <i class="fa-solid fa-ranking-star" style="font-size: 3rem; opacity: 0.3;"></i>
+        <p class="mt-3">No hay encuentros finalizados para calcular rendimiento.</p>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

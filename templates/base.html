@@ -35,7 +35,7 @@
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link nav-link-custom" href="#">
+                        <a class="nav-link nav-link-custom {% if request.resolver_match.url_name == 'lista_jugadores' %}active{% endif %}" href="{% url 'lista_jugadores' %}">
                             <i class="fa-solid fa-user-group icon-spacing"></i> Jugadores
                         </a>
                     </li>
@@ -53,6 +53,15 @@
                 
                 <div class="d-flex align-items-center gap-3">
                     {% if user.is_authenticated %}
+                        {% if user.is_staff %}
+                            <a href="{% url 'panel_admin' %}" class="text-decoration-none me-3" style="color: #7c3aed;">
+                                <i class="fa-solid fa-shield-halved me-1"></i>
+                                <strong class="text-white">Admin</strong>
+                            </a>
+                        {% endif %}
+                        <a href="{% url 'lista_notificaciones' %}" class="text-decoration-none me-3 position-relative" style="color: #8a8d98;">
+                            <i class="fa-solid fa-bell"></i>
+                        </a>
                         <a href="{% url 'ver_perfil' %}" class="text-decoration-none me-2" style="color: #8a8d98;">
                             <i class="fa-solid fa-circle-user me-1"></i>
                             <strong class="text-white">{{ user.username }}</strong>

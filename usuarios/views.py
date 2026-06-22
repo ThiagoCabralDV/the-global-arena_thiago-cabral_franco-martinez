@@ -1,5 +1,6 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth import login, logout, authenticate
+from django.contrib.auth.models import User
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
@@ -42,6 +43,19 @@ def cerrar_sesion(request):
     logout(request)
     messages.info(request, 'Sesión cerrada correctamente.')
     return redirect('index')
+
+
+def perfil_publico(request, username):
+    usuario = get_object_or_404(User, username=username)
+    profile = usuario.profile
+    inscripciones = Inscripcion.objects.filter(
+        usuario=usuario, estado='CON'
+    ).select_related('torneo')
+    return render(request, 'usuarios/perfil_publico.html', {
+        'profile': profile,
+        'usuario': usuario,
+        'inscripciones': inscripciones,
+    })
 
 
 @login_required

@@ -79,10 +79,15 @@
                 {% endif %}
             </div>
 
-            <div class="text-center mt-3">
+            <div class="d-flex justify-content-center gap-3 mt-3">
                 <a href="{% url 'lista_jugadores' %}" class="text-decoration-none small" style="color: #905cf7;">
                     <i class="fa-solid fa-arrow-left me-1"></i> Volver a jugadores
                 </a>
+                {% if user.is_authenticated and user != usuario %}
+                <a href="{% url 'reportar_usuario' usuario.username %}" class="text-decoration-none small" style="color: #ef4444;">
+                    <i class="fa-solid fa-flag me-1"></i> Reportar
+                </a>
+                {% endif %}
             </div>
         </div>
     </div>

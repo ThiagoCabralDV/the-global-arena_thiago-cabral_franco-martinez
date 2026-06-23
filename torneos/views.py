@@ -1,21 +1,69 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required, user_passes_test
 from django.contrib import messages
+from django.db.models import Count, Q
 from django.contrib.auth.models import User
-from django.db.models import Q, Count
 from django.utils import timezone
 from .models import Torneo
 from .forms import TorneoForm
 from .singleton.tournament_manager import TournamentManager
-from .strategies import SingleEliminationStrategy
+from .strategies import SingleEliminationStrategy  # Patrón Strategy
 from inscripciones.models import Inscripcion
-from reportes.models import Reporte
-from usuarios.models import Profile
-from notificaciones.notificador import notificador
+from encuentros.models import Encuentro  # Import para los combates del home
+from reportes.models import Reporte  # Panel de administración de Franco
+from usuarios.models import Profile  # Panel de administración de Franco
+from notificaciones.notificador import notificador  # Sistema de alertas de Franco
+
+# ==========================================
+# VISTAS BASE DE TORNEOS (Thiago + Franco)
+# ==========================================
 
 def index(request):
-    torneos_recientes = Torneo.objects.all().order_by('-fecha_inicio')[:3]
-    return render(request, 'index.html', {'torneos_recientes': torneos_recientes})
+    # 1. Contadores dinámicos para el Hero
+    total_torneos = Torneo.objects.count()
+    total_jugadores = User.objects.count()
+    total_combates = Encuentro.objects.count()
+
+    # 2. Torneos Destacados: Traemos los 3 más recientes/próximos
+    torneos_destacados = Torneo.objects.annotate(
+        total_inscritos=Count('inscripciones', distinct=True)
+    ).order_by('-fecha_inicio')[:3]
+
+    # 3. Top Jugadores: Adaptamos la lógica de Franco para sacar el Top 4
+    jugadores = User.objects.filter(
+        Q(encuentros_j1__isnull=False) | Q(encuentros_j2__isnull=False)
+    ).distinct()
+
+    stats = []
+    for j in jugadores:
+        total_fin = Encuentro.objects.filter(
+            Q(jugador1=j) | Q(jugador2=j), estado=Encuentro.Estado.FINALIZADO
+        ).count()
+        wins = Encuentro.objects.filter(ganador=j, estado=Encuentro.Estado.FINALIZADO).count()
+        losses = total_fin - wins
+        win_pct = round((wins / total_fin * 100), 1) if total_fin > 0 else 0
+        
+        stats.append({
+            'jugador': j,
+            'wins': wins,
+            'losses': losses,
+            'win_pct': win_pct,
+        })
+
+    # Ordenamos por más victorias y mejor winrate
+    stats.sort(key=lambda x: (-x['wins'], -x['win_pct']))
+    top_jugadores = stats[:4]
+
+    context = {
+        'total_torneos': total_torneos,
+        'total_jugadores': total_jugadores,
+        'total_combates': total_combates,
+        'torneos_destacados': torneos_destacados,
+        'top_jugadores': top_jugadores,
+    }
+
+    return render(request, 'index.html', context)
+
 
 def lista_torneos(request):
     torneos = Torneo.objects.all().order_by('-fecha_inicio')
@@ -39,6 +87,7 @@ def lista_jugadores(request):
         'query': query,
     })
 
+
 def detalle_torneo(request, torneo_id):
     torneo = get_object_or_404(Torneo, pk=torneo_id)
     inscripciones = Inscripcion.objects.filter(torneo=torneo).exclude(estado='CAN').select_related('usuario')
@@ -51,8 +100,10 @@ def detalle_torneo(request, torneo_id):
         'torneo': torneo,
         'inscripciones': inscripciones,
         'inscripto': inscripto,
+        'ya_inscrito': inscripto,  # Corregido: mapeado a la variable correcta 'inscripto'
         'cupos_disponibles': torneo.cupo_maximo - inscripciones.count(),
     })
+
 
 @login_required
 def crear_torneo(request):
@@ -70,8 +121,9 @@ def crear_torneo(request):
         form = TorneoForm()
     return render(request, 'torneos/crear_torneo.html', {'form': form})
 
+
 # ==========================================
-# GESTIÓN DE INSCRIPCIONES (SINGLETON)
+# GESTIÓN DE INSCRIPCIONES (SINGLETON + NOTIFICADOR)
 # ==========================================
 
 @login_required
@@ -100,6 +152,11 @@ def desinscribir_torneo(request, torneo_id):
         messages.error(request, mensaje)
     return redirect('detalle_torneo', torneo_id=torneo_id)
 
+
+# ==========================================
+# LÓGICA DE BRACKETS (PATRÓN STRATEGY)
+# ==========================================
+
 @login_required
 def generar_bracket(request, torneo_id):
     torneo = get_object_or_404(Torneo, pk=torneo_id)
@@ -118,6 +175,7 @@ def generar_bracket(request, torneo_id):
         messages.error(request, 'Se necesitan al menos 2 jugadores inscritos para generar el bracket.')
         return redirect('detalle_torneo', torneo_id=torneo_id)
 
+    # Ejecución del Patrón Strategy delegando la lógica algorítmica
     estrategia = SingleEliminationStrategy()
     fase, jugador_libre = estrategia.generar_bracket(torneo, inscritos)
 
@@ -136,6 +194,10 @@ def ver_bracket(request, torneo_id):
     fases = torneo.fases.all().order_by('orden').prefetch_related('encuentros')
     return render(request, 'torneos/bracket.html', {'torneo': torneo, 'fases': fases})
 
+
+# ==========================================
+# PANEL DE ADMINISTRACIÓN (Franco's Feature)
+# ==========================================
 
 def es_admin(user):
     return user.is_authenticated and user.is_staff

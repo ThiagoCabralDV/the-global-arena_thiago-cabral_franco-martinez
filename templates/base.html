@@ -14,7 +14,7 @@
 
     <nav class="navbar navbar-expand-lg navbar-custom sticky-top">
         <div class="container">
-            <a class="navbar-brand text-white fw-bold d-flex align-items-center gap-2" href="#">
+            <a class="navbar-brand text-white fw-bold d-flex align-items-center gap-2" href="{% url 'index' %}">
                 <i class="fa-solid fa-gamepad brand-icon"></i> ARENA<span class="brand-accent">FGC</span>
             </a>
             
@@ -94,7 +94,7 @@
         {% endblock %}
     </main>
 
-    <footer class="footer-custom py-5 mt-5">
+    <footer class="footer-custom py-5">
         <div class="container">
             <div class="row gy-4">
                 <div class="col-md-6">
@@ -109,8 +109,8 @@
                 <div class="col-md-3">
                     <div class="text-white fw-bold small mb-3 section-tracking">NAVEGACIÓN</div>
                     <ul class="list-unstyled d-flex flex-column gap-2 small">
-                        <li><a href="#" class="footer-link"><i class="fa-solid fa-trophy me-1 sub-icon"></i> Torneos</a></li>
-                        <li><a href="#" class="footer-link"><i class="fa-solid fa-user-group me-1 sub-icon"></i> Jugadores</a></li>
+                        <li><a href="{% url 'lista_torneos' %}" class="footer-link"><i class="fa-solid fa-trophy me-1 sub-icon"></i> Torneos</a></li>
+                        <li><a href="{% url 'lista_jugadores' %}" class="footer-link"><i class="fa-solid fa-user-group me-1 sub-icon"></i> Jugadores</a></li>
                     </ul>
                 </div>
                 

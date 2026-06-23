@@ -8,6 +8,14 @@
         <i class="fa-solid fa-sitemap me-2 text-purple-custom"></i> Bracket - {{ torneo.nombre }}
     </h2>
 
+    {% if torneo_completo and campeon %}
+    <div class="text-center mb-5 p-4 rounded-3" style="background: linear-gradient(135deg, #1a1a2e, #2d1b4e); border: 1px solid #7c3aed;">
+        <i class="fa-solid fa-crown mb-2" style="font-size: 2rem; color: gold;"></i>
+        <h3 class="text-white fw-bold">¡Campeón del torneo!</h3>
+        <p class="brand-accent fw-bold fs-4 mb-0">{{ campeon.username }}</p>
+    </div>
+    {% endif %}
+
     {% if fases %}
         {% for fase in fases %}
         <div class="mb-5">

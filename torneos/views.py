@@ -10,9 +10,10 @@ from .singleton.tournament_manager import TournamentManager
 from .strategies import SingleEliminationStrategy  # Patrón Strategy
 from inscripciones.models import Inscripcion
 from encuentros.models import Encuentro  # Import para los combates del home
-from reportes.models import Reporte  # Panel de administración de Franco
-from usuarios.models import Profile  # Panel de administración de Franco
-from notificaciones.notificador import notificador  # Sistema de alertas de Franco
+from reportes.models import Reporte  # Panel de administración
+from usuarios.models import Profile  # Panel de administración
+from notificaciones.notificador import notificador  # Sistema de alertas
+from .composite import TorneoComposite, FaseComposite, EncuentroLeaf
 
 # ==========================================
 # VISTAS BASE DE TORNEOS (Thiago + Franco)
@@ -191,8 +192,24 @@ def generar_bracket(request, torneo_id):
 
 def ver_bracket(request, torneo_id):
     torneo = get_object_or_404(Torneo, pk=torneo_id)
-    fases = torneo.fases.all().order_by('orden').prefetch_related('encuentros')
-    return render(request, 'torneos/bracket.html', {'torneo': torneo, 'fases': fases})
+    fases_db = torneo.fases.all().order_by('orden').prefetch_related('encuentros')
+
+    torneo_composite = TorneoComposite(torneo)
+    for fase_db in fases_db:
+        fase_comp = FaseComposite(fase_db.nombre)
+        for encuentro in fase_db.encuentros.all():
+            fase_comp.agregar(EncuentroLeaf(encuentro))
+        torneo_composite.agregar(fase_comp)
+
+    campeon = torneo_composite.obtener_campeon()
+    torneo_completo = torneo_composite.esta_completo()
+
+    return render(request, 'torneos/bracket.html', {
+        'torneo': torneo,
+        'fases': fases_db,
+        'campeon': campeon,
+        'torneo_completo': torneo_completo,
+    })
 
 
 # ==========================================

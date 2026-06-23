@@ -28,6 +28,7 @@
                     <th>Usuario</th>
                     <th>Nombre</th>
                     <th>Email</th>
+                    <th>Strikes</th>
                     <th>Estado</th>
                     <th>Acciones</th>
                 </tr>
@@ -38,6 +39,11 @@
                     <td class="text-white">{{ u.username }}</td>
                     <td class="text-white-50">{{ u.first_name }} {{ u.last_name }}</td>
                     <td class="text-white-50">{{ u.email }}</td>
+                    <td>
+                        <span class="badge {% if u.profile.strikes >= 3 %}bg-danger{% elif u.profile.strikes >= 2 %}bg-warning text-dark{% else %}bg-secondary{% endif %}">
+                            {{ u.profile.strikes }}
+                        </span>
+                    </td>
                     <td>
                         {% if not u.is_active %}
                             <span class="badge bg-danger">Baneado</span>
@@ -85,7 +91,7 @@
                 {% endif %}
                 {% empty %}
                 <tr>
-                    <td colspan="5" class="text-center text-white-50">No se encontraron usuarios.</td>
+                    <td colspan="6" class="text-center text-white-50">No se encontraron usuarios.</td>
                 </tr>
                 {% endfor %}
             </tbody>

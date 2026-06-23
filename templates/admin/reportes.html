@@ -20,6 +20,7 @@
                 <tr class="small" style="color: #a78bfa;">
                     <th>Denunciante</th>
                     <th>Denunciado</th>
+                    <th>Strikes</th>
                     <th>Torneo</th>
                     <th>Descripción</th>
                     <th>Fecha</th>
@@ -32,7 +33,12 @@
                 <tr>
                     <td class="text-white">{{ reporte.denunciante.username }}</td>
                     <td class="text-white">{{ reporte.denunciado.username }}</td>
-                    <td class="text-white-50">{{ reporte.torneo.nombre }}</td>
+                    <td>
+                        <span class="badge {% if reporte.denunciado.profile.strikes >= 3 %}bg-danger{% elif reporte.denunciado.profile.strikes >= 2 %}bg-warning text-dark{% else %}bg-secondary{% endif %}">
+                            {{ reporte.denunciado.profile.strikes }}
+                        </span>
+                    </td>
+                    <td class="text-white-50">{{ reporte.torneo.nombre|default:"-" }}</td>
                     <td class="text-white-50 small" style="max-width: 200px;">{{ reporte.descripcion|truncatewords:15 }}</td>
                     <td class="text-white-50 small">{{ reporte.fecha|date:"d/m/Y H:i" }}</td>
                     <td>
@@ -59,7 +65,7 @@
                 </tr>
                 {% empty %}
                 <tr>
-                    <td colspan="7" class="text-center text-white-50">No hay reportes.</td>
+                    <td colspan="8" class="text-center text-white-50">No hay reportes.</td>
                 </tr>
                 {% endfor %}
             </tbody>

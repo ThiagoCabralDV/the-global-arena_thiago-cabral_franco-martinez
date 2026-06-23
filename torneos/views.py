@@ -4,6 +4,7 @@ from django.contrib import messages
 from django.contrib.auth.models import User
 from django.db.models import Q, Count
 from django.utils import timezone
+from django.conf import settings
 from .models import Torneo
 from .forms import TorneoForm
 from .singleton.tournament_manager import TournamentManager
@@ -216,8 +217,28 @@ def admin_resolver_reporte(request, reporte_id):
     reporte = get_object_or_404(Reporte, pk=reporte_id)
     reporte.estado = 'RES'
     reporte.save()
-    messages.success(request, 'Reporte resuelto correctamente.')
+
+    profile = reporte.denunciado.profile
+    profile.strikes += 1
+    profile.save()
+
+    max_strikes = settings.MAX_STRIKES_BEFORE_BAN
+    strikes_restantes = max_strikes - profile.strikes
+
+    if profile.strikes >= max_strikes and not profile.baneado:
+        profile.baneado = True
+        profile.motivo_ban = f'Baneo automático por alcanzar {max_strikes} strikes (reportes confirmados).'
+        profile.fecha_ban = timezone.now()
+        profile.save()
+        reporte.denunciado.is_active = False
+        reporte.denunciado.save()
+        notificador.notificar(reporte.denunciado, f'Fuiste baneado automáticamente por acumular {max_strikes} reportes confirmados.', 'BAN')
+        messages.warning(request, f'{reporte.denunciado.username} fue baneado automáticamente por alcanzar {max_strikes} strikes.')
+    else:
+        notificador.notificar(reporte.denunciado, f'Recibiste un strike. Tenés {strikes_restantes} strike(s) antes del baneo automático.', 'REP')
+
     notificador.notificar(reporte.denunciante, f"Tu reporte contra {reporte.denunciado.username} fue resuelto.", 'REP')
+    messages.success(request, 'Reporte resuelto correctamente.')
     return redirect('admin_reportes')
 
 

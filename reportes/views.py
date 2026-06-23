@@ -1,8 +1,12 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect, get_object_or_404
 from django.db.models import Count, Max, Q
 from django.contrib.auth.models import User
+from django.contrib.auth.decorators import login_required
+from django.contrib import messages
 from torneos.models import Torneo
 from encuentros.models import Encuentro
+from .models import Reporte
+from .forms import ReporteForm
 
 def resultados_torneos(request):
     torneos = Torneo.objects.annotate(
@@ -67,3 +71,32 @@ def rendimiento_jugadores(request):
 
     stats.sort(key=lambda x: (-x['wins'], -x['win_pct']))
     return render(request, 'reportes/rendimiento.html', {'stats': stats})
+
+
+@login_required
+def reportar_usuario(request, username):
+    denunciado = get_object_or_404(User, username=username)
+
+    if request.user == denunciado:
+        messages.error(request, 'No podés reportarte a vos mismo.')
+        return redirect('perfil_publico', username=username)
+
+    if request.method == 'POST':
+        form = ReporteForm(request.POST)
+        if form.is_valid():
+            reporte = form.save(commit=False)
+            reporte.denunciante = request.user
+            reporte.denunciado = denunciado
+            reporte.save()
+
+            messages.success(request, f'Reportaste a {denunciado.username}. Un administrador lo revisará.')
+            return redirect('perfil_publico', username=username)
+        else:
+            messages.error(request, 'Corregí los errores del formulario.')
+    else:
+        form = ReporteForm()
+
+    return render(request, 'reportes/reportar.html', {
+        'form': form,
+        'denunciado': denunciado,
+    })

@@ -10,7 +10,7 @@ class Reporte(models.Model):
 
     denunciante = models.ForeignKey(User, on_delete=models.CASCADE, related_name='reportes_emitidos')
     denunciado = models.ForeignKey(User, on_delete=models.CASCADE, related_name='reportes_recibidos')
-    torneo = models.ForeignKey(Torneo, on_delete=models.CASCADE, related_name='reportes')
+    torneo = models.ForeignKey(Torneo, on_delete=models.CASCADE, related_name='reportes', null=True, blank=True)
     descripcion = models.TextField()
     fecha = models.DateTimeField(auto_now_add=True)
     estado = models.CharField(max_length=3, choices=Estado.choices, default=Estado.PENDIENTE)

@@ -30,7 +30,6 @@ def iniciar_sesion(request):
         if form.is_valid():
             user = form.get_user()
             login(request, user)
-            messages.success(request, f'¡Bienvenido de nuevo!')
             return redirect('index')
         else:
             messages.error(request, 'Usuario o contraseña incorrectos.')
@@ -41,7 +40,6 @@ def iniciar_sesion(request):
 
 def cerrar_sesion(request):
     logout(request)
-    messages.info(request, 'Sesión cerrada correctamente.')
     return redirect('index')
 
 

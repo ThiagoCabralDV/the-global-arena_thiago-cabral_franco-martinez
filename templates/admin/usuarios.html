@@ -1,0 +1,109 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Usuarios - Panel Admin{% endblock %}
+
+{% block content %}
+<div class="container mt-5 mb-5">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h4 class="text-white fw-bold">
+            <i class="fa-solid fa-users me-2 brand-accent"></i> Gestionar Usuarios
+        </h4>
+        <a href="{% url 'panel_admin' %}" class="btn btn-outline-light btn-sm">
+            <i class="fa-solid fa-arrow-left me-1"></i> Volver al panel
+        </a>
+    </div>
+
+    <form method="GET" class="mb-4">
+        <div class="input-group">
+            <input type="text" name="q" class="form-control form-control-dark" placeholder="Buscar usuarios..." value="{{ query }}">
+            <button class="btn btn-purple-custom" type="submit"><i class="fa-solid fa-search"></i></button>
+        </div>
+    </form>
+
+    <div class="table-responsive">
+        <table class="table table-dark table-borderless align-middle">
+            <thead>
+                <tr class="small" style="color: #a78bfa;">
+                    <th>Usuario</th>
+                    <th>Nombre</th>
+                    <th>Email</th>
+                    <th>Estado</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for u in usuarios %}
+                <tr>
+                    <td class="text-white">{{ u.username }}</td>
+                    <td class="text-white-50">{{ u.first_name }} {{ u.last_name }}</td>
+                    <td class="text-white-50">{{ u.email }}</td>
+                    <td>
+                        {% if not u.is_active %}
+                            <span class="badge bg-danger">Baneado</span>
+                        {% elif u.is_staff %}
+                            <span class="badge bg-info">Admin</span>
+                        {% else %}
+                            <span class="badge bg-success">Activo</span>
+                        {% endif %}
+                    </td>
+                    <td>
+                        {% if u.is_active %}
+                            <button class="btn btn-outline-danger btn-sm" data-bs-toggle="modal" data-bs-target="#banModal{{ u.id }}">
+                                <i class="fa-solid fa-ban"></i> Banear
+                            </button>
+                        {% else %}
+                            <a href="{% url 'admin_desbanear_usuario' u.id %}" class="btn btn-outline-success btn-sm">
+                                <i class="fa-solid fa-check"></i> Desbanear
+                            </a>
+                        {% endif %}
+                    </td>
+                </tr>
+
+                {% if u.is_active %}
+                <div class="modal fade" id="banModal{{ u.id }}" tabindex="-1">
+                    <div class="modal-dialog">
+                        <div class="modal-content" style="background: #1a1a2e; border: 1px solid #2d2d4e;">
+                            <div class="modal-header border-0">
+                                <h5 class="text-white fw-bold">Banear a {{ u.username }}</h5>
+                                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                            </div>
+                            <form method="POST" action="{% url 'admin_banear_usuario' u.id %}">
+                                {% csrf_token %}
+                                <div class="modal-body">
+                                    <label class="text-white small mb-1">Motivo del baneo</label>
+                                    <textarea name="motivo" class="form-control form-control-dark" rows="3" required></textarea>
+                                </div>
+                                <div class="modal-footer border-0">
+                                    <button type="button" class="btn btn-outline-light btn-sm" data-bs-dismiss="modal">Cancelar</button>
+                                    <button type="submit" class="btn btn-danger btn-sm">Banear</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+                {% endif %}
+                {% empty %}
+                <tr>
+                    <td colspan="5" class="text-center text-white-50">No se encontraron usuarios.</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<style>
+.form-control-dark {
+    background: #0f0f1a;
+    border: 1px solid #2d2d4e;
+    color: white;
+}
+.form-control-dark:focus {
+    background: #0f0f1a;
+    border-color: #7c3aed;
+    color: white;
+    box-shadow: 0 0 0 0.2rem rgba(124, 58, 237, 0.25);
+}
+</style>
+{% endblock %}

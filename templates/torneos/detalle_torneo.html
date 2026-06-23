@@ -62,7 +62,7 @@
             {% if user.is_authenticated %}
                 {% if user == torneo.organizador %}
                     <span class="text-white-50 small me-2">Sos el organizador de este torneo.</span>
-                {% elif ya_inscrito or inscripto %}
+                {% elif inscripto %}
                     <form method="POST" action="{% url 'desinscribir_torneo' torneo.id %}" class="d-inline">
                         {% csrf_token %}
                         <button type="submit" class="btn btn-outline-danger fw-bold">

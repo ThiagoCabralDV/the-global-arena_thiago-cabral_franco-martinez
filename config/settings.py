@@ -42,6 +42,7 @@ INSTALLED_APPS = [
     'inscripciones',
     'encuentros',
     'reportes',
+    'notificaciones',
 ]
 
 MIDDLEWARE = [

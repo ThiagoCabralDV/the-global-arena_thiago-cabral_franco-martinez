@@ -1,0 +1,79 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Panel Admin - ArenaFGC{% endblock %}
+
+{% block content %}
+<div class="container mt-5 mb-5">
+    <h2 class="text-white fw-bold mb-4">
+        <i class="fa-solid fa-shield-halved me-2 brand-accent"></i> Panel de Administración
+    </h2>
+
+    <div class="row g-4 mb-4">
+        <div class="col-md-3">
+            <a href="{% url 'admin_usuarios' %}" class="text-decoration-none">
+                <div class="p-3 rounded-3 text-center" style="background: #1a1a2e; border: 1px solid #2d2d4e;">
+                    <i class="fa-solid fa-users fa-2x mb-2" style="color: #7c3aed;"></i>
+                    <div class="text-white fw-bold fs-4">{{ total_usuarios }}</div>
+                    <div class="small" style="color: #a78bfa;">Usuarios</div>
+                </div>
+            </a>
+        </div>
+        <div class="col-md-3">
+            <a href="{% url 'admin_torneos' %}" class="text-decoration-none">
+                <div class="p-3 rounded-3 text-center" style="background: #1a1a2e; border: 1px solid #2d2d4e;">
+                    <i class="fa-solid fa-trophy fa-2x mb-2" style="color: #7c3aed;"></i>
+                    <div class="text-white fw-bold fs-4">{{ total_torneos }}</div>
+                    <div class="small" style="color: #a78bfa;">Torneos</div>
+                </div>
+            </a>
+        </div>
+        <div class="col-md-3">
+            <a href="{% url 'admin_reportes' %}" class="text-decoration-none">
+                <div class="p-3 rounded-3 text-center" style="background: #1a1a2e; border: 1px solid #2d2d4e;">
+                    <i class="fa-solid fa-flag fa-2x mb-2" style="color: #7c3aed;"></i>
+                    <div class="text-white fw-bold fs-4">{{ reportes_pendientes }}</div>
+                    <div class="small" style="color: #a78bfa;">Reportes pendientes</div>
+                </div>
+            </a>
+        </div>
+        <div class="col-md-3">
+            <div class="p-3 rounded-3 text-center" style="background: #1a1a2e; border: 1px solid #2d2d4e;">
+                <i class="fa-solid fa-ban fa-2x mb-2" style="color: #ef4444;"></i>
+                <div class="text-white fw-bold fs-4">{{ baneados }}</div>
+                <div class="small" style="color: #f87171;">Usuarios baneados</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row g-4">
+        <div class="col-md-4">
+            <a href="{% url 'admin_usuarios' %}" class="text-decoration-none">
+                <div class="p-4 rounded-3" style="background: #1a1a2e; border: 1px solid #2d2d4e;">
+                    <i class="fa-solid fa-users-gear fa-2x mb-3 brand-accent"></i>
+                    <h5 class="text-white fw-bold">Gestionar Usuarios</h5>
+                    <p class="small" style="color: #a78bfa;">Banear, desbanear y administrar usuarios</p>
+                </div>
+            </a>
+        </div>
+        <div class="col-md-4">
+            <a href="{% url 'admin_reportes' %}" class="text-decoration-none">
+                <div class="p-4 rounded-3" style="background: #1a1a2e; border: 1px solid #2d2d4e;">
+                    <i class="fa-solid fa-flag fa-2x mb-3 brand-accent"></i>
+                    <h5 class="text-white fw-bold">Gestionar Reportes</h5>
+                    <p class="small" style="color: #a78bfa;">Resolver o desestimar denuncias</p>
+                </div>
+            </a>
+        </div>
+        <div class="col-md-4">
+            <a href="{% url 'admin_torneos' %}" class="text-decoration-none">
+                <div class="p-4 rounded-3" style="background: #1a1a2e; border: 1px solid #2d2d4e;">
+                    <i class="fa-solid fa-trophy fa-2x mb-3 brand-accent"></i>
+                    <h5 class="text-white fw-bold">Gestionar Torneos</h5>
+                    <p class="small" style="color: #a78bfa;">Editar o cancelar torneos activos</p>
+                </div>
+            </a>
+        </div>
+    </div>
+</div>
+{% endblock %}

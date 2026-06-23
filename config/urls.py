@@ -23,8 +23,9 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('', include('torneos.urls')),
     path('usuarios/', include('usuarios.urls')),
-    path('encuentros/', include('encuentros.urls')),
     path('reportes/', include('reportes.urls')),
+    path('encuentros/', include('encuentros.urls')),
+    path('notificaciones/', include('notificaciones.urls')),
 ]
 
 if settings.DEBUG:

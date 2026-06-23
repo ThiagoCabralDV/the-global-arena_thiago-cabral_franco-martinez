@@ -11,6 +11,9 @@ class Profile(models.Model):
     telefono = models.CharField(max_length=20, blank=True)
     pais = models.CharField(max_length=100, blank=True)
     fecha_nacimiento = models.DateField(null=True, blank=True)
+    baneado = models.BooleanField(default=False)
+    motivo_ban = models.TextField(blank=True)
+    fecha_ban = models.DateTimeField(null=True, blank=True)
 
     def __str__(self):
         return f"Perfil de {self.usuario.username}"
